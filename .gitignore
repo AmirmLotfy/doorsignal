@@ -1,0 +1,23 @@
+node_modules
+.pnpm-store
+dist
+.next
+out
+.turbo
+*.tsbuildinfo
+.env
+.env.local
+.env.production
+.DS_Store
+coverage
+
+# Local credentials, generated builds, and runtime data
+.env.*
+!.env.example
+.data/
+.local/
+cdk.out/
+infra/cdk/cdk.context.json
+artifacts/private/
+*.pem
+*.key

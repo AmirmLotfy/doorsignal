@@ -1,0 +1,20 @@
+{
+  "name": "@doorsignal/ring-client",
+  "version": "0.1.0",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "tsup src/index.ts src/simulate.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "simulate": "tsx src/simulate.ts"
+  },
+  "dependencies": {
+    "@doorsignal/arrival-schema": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.6",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

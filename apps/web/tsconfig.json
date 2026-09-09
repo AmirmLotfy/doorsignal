@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@doorsignal/ui": ["../../packages/ui/src/index.ts"],
+      "@doorsignal/arrival-schema": ["../../packages/arrival-schema/src/index.ts"],
+      "@doorsignal/ring-client": ["../../packages/ring-client/src/index.ts"],
+      "@doorsignal/ring-webhooks": ["../../services/ring-webhooks/src/index.ts"],
+      "@doorsignal/case-engine": ["../../services/case-engine/src/index.ts"],
+      "@doorsignal/arrival-resolver": ["../../services/arrival-resolver/src/index.ts"],
+      "@doorsignal/db": ["../../packages/db/src/index.ts"],
+      "@doorsignal/events": ["../../packages/events/src/index.ts"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
