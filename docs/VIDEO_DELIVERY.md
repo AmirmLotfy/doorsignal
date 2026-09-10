@@ -13,14 +13,15 @@ The media outputs are intentionally ignored by Git because they are delivery art
 
 ## Production record
 
-- Narrator: Higgsfield Seed Audio 1.0, Cillian preset.
+- Narrator: Higgsfield Text to Speech 2.0, ElevenLabs engine, Reid male preset (`66469f5a-10db-586a-bab1-72f6ee66ba69`).
 - Music: original Higgsfield Sonilo Music generation, instrumental only.
 - Product capture: `https://doorsignal.site`, isolated fictional judge sessions, 1920 × 1080 desktop and 430 × 932 visitor view.
-- Mix: integrated loudness target −14 LUFS, true peak ceiling −1.5 dB, narration over an 11% instrumental bed.
+- Mix: measured −15.6 LUFS integrated and −1.27 dBTP after AAC encoding, with narration over an 11% instrumental bed.
 - Captions: sentence-timed sidecar plus deterministic open-caption cards.
 - Edit: one prepared operator session and one visitor session; loading and reload intervals are excluded from the timeline.
 - Validation: full-file decode succeeds; duration 165.000 seconds; exactly 4,950 video frames; H.264/AAC; 1920 × 1080; constant 30 fps; 48 kHz stereo.
 - Timing QC: AWS architecture remains visible at 02:25; the CTA begins at 02:30; the 02:44.8 frame remains bright and branded.
+- Narration QC: final speech windows are 10.240s, 31.200s, 21.582s, 21.840s, and 37.360s. No time stretching is applied.
 
 ## Provider-evidence gate
 
@@ -31,7 +32,7 @@ Amazon Bedrock returned `ValidationException: Operation not allowed` for Nova 2 
 ## Checksums
 
 ```text
-6b80ef35e4bc1a3fb63600ae7018af981d475406ca3110911570baae957259e1  doorsignal-demo-1080p.mp4
-76bad2f7d0ecbc14f39d3ec94f19bd093299777ca3239be99b7b57ff8d6c5b2b  doorsignal-demo-1080p-captioned.mp4
-6f217b2a76f179f3a2f91f0dfa5b563ee8d053be592181bc28983a2ce148f717  doorsignal-demo-en.srt
+a063efef7228ec8665e9548caf8050ef1b79d2e02d3e100d738f305bab36d91a  doorsignal-demo-1080p.mp4
+7a0678fb9cd6523efad24639d235bc0d70d1ee9feb6b91cba6c0da729cf2cf74  doorsignal-demo-1080p-captioned.mp4
+2c9a5b2febd3066c9c2dc5b42e64a9e6aa899886f0f199fb1a4ded0c09f70b04  doorsignal-demo-en.srt
 ```

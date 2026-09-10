@@ -1,6 +1,6 @@
 # DoorSignal demo script
 
-Final runtime: **2 minutes 45 seconds**. Language: English. Narration: Higgsfield Seed Audio 1.0 using the Cillian male preset. Product footage is a real browser recording of the deployed judge demo. The official Ring playground insert remains pending Amazon Developer sign-in.
+Final runtime: **2 minutes 45 seconds**. Language: English. Narration: Higgsfield Text to Speech 2.0 using the Reid male preset and ElevenLabs engine. Product footage is a real browser recording of the deployed judge demo. The official Ring playground insert remains pending Amazon Developer sign-in.
 
 ## 0:00–0:10 — The problem and product
 
@@ -8,7 +8,7 @@ Final runtime: **2 minutes 45 seconds**. Language: English. Narration: Higgsfiel
 
 **Voiceover:**
 
-> A doorbell can tell you someone arrived. It cannot tell your team why they are there, who owns the visit, or what happened next. DoorSignal turns Ring events into a shared arrival inbox.
+> Built for the Amazon Developer Hackathon, DoorSignal turns Ring events into accountable arrivals, with clear ownership from doorbell to done.
 
 ## 0:10–1:00 — Guest check-in and acknowledgment
 
@@ -16,7 +16,7 @@ Final runtime: **2 minutes 45 seconds**. Language: English. Narration: Higgsfiel
 
 **Voiceover:**
 
-> Here is a guest arriving for a scheduled visit. DoorSignal records the event as a case and keeps the schedule match tentative. The sign opens a check-in page on the guest's own phone—no app and no camera permission. The guest shares a name and visit type, with consent. That check-in is stronger evidence, so the case updates. The host sees a clear reason, takes ownership, and responds. A moment later, the guest's page says the host is on the way. Every step is saved, and no facial recognition is used.
+> Here is a guest arriving. DoorSignal records the event as a case and keeps the schedule match tentative. The sign opens a check-in page on the guest's own phone—no app and no camera permission. The guest shares a name and visit type. That check-in is stronger evidence, so the case updates. The host sees a clear reason, takes ownership, and responds. A moment later, the guest's page says the host is on the way. Every step is saved, and no facial recognition is used.
 
 ## 1:00–1:35 — Delivery lifecycle
 
@@ -24,7 +24,7 @@ Final runtime: **2 minutes 45 seconds**. Language: English. Narration: Higgsfiel
 
 **Voiceover:**
 
-> Deliveries use the same calm handoff. A due package appears with an owner and its current state. Operations marks it received, so it moves to awaiting collection. When a teammate picks it up, one more action closes the case. The timeline records who changed the state, and a stale or repeated action cannot overwrite the latest result.
+> Deliveries use the same calm handoff. A due package appears with its owner and current state. Operations marks it received, moving it to awaiting collection. When a teammate picks it up, one more action closes the case. The timeline records who changed the state, and repeated actions cannot overwrite the latest result.
 
 ## 1:35–2:05 — Scheduled service and unmatched arrival
 
@@ -40,7 +40,7 @@ Final runtime: **2 minutes 45 seconds**. Language: English. Narration: Higgsfiel
 
 **Voiceover:**
 
-> This is the live path. DoorSignal calls Ring's server-side API for device discovery, event history, and receive-only WHEP sessions. Signed webhook bytes are persisted before the response. DynamoDB Streams and EventBridge drive a retryable Lambda worker. Nova 2 Lite returns only bounded scene facts; malformed or unavailable results become unknown. Failed work goes to a dead-letter queue.
+> This is the live path. DoorSignal calls Ring's server-side API for device discovery, event history, and receive-only WHEP sessions. Signed webhook bytes are persisted before the response. DynamoDB Streams and EventBridge drive a retryable Lambda worker. Nova 2 Lite is bounded to coarse scene facts; unavailable results become unknown. Failed work goes to a dead-letter queue.
 
 ## 2:30–2:45 — Customer value and close
 
@@ -48,7 +48,7 @@ Final runtime: **2 minutes 45 seconds**. Language: English. Narration: Higgsfiel
 
 **Voiceover:**
 
-> DoorSignal gives a small workplace the clarity of a front desk using the Ring devices it already has. Guests know someone heard them. Teams know what needs action. From doorbell to done.
+> DoorSignal gives small workplaces the clarity of a front desk using Ring devices they already have. Guests know someone heard them. Teams know what needs action. From doorbell to done.
 
 ## Recording and edit notes
 

@@ -140,43 +140,42 @@ def make_cta_card(path: Path) -> None:
 
 def make_captions(path: Path) -> list[tuple[float, float, str]]:
     chapters = [
-        (0.6, 11.281458, [
-            "A doorbell can tell you someone arrived.",
-            "It cannot tell your team why they are there, who owns the visit, or what happened next.",
-            "DoorSignal turns Ring events into a shared arrival inbox.",
+        (0.6, 10.24, [
+            "Built for the Amazon Developer Hackathon, DoorSignal turns Ring events into accountable arrivals,",
+            "with clear ownership from doorbell to done.",
         ]),
-        (13.5, 33.991042, [
-            "Here is a guest arriving for a scheduled visit.",
+        (13.5, 31.2, [
+            "Here is a guest arriving.",
             "DoorSignal records the event as a case and keeps the schedule match tentative.",
             "The sign opens a check-in page on the guest's own phone—no app and no camera permission.",
-            "The guest shares a name and visit type, with consent.",
+            "The guest shares a name and visit type.",
             "That check-in is stronger evidence, so the case updates.",
             "The host sees a clear reason, takes ownership, and responds.",
             "A moment later, the guest's page says the host is on the way.",
             "Every step is saved, and no facial recognition is used.",
         ]),
-        (54.5, 25.28, [
+        (54.758, 21.582, [
             "Deliveries use the same calm handoff.",
-            "A due package appears with an owner and its current state.",
-            "Operations marks it received, so it moves to awaiting collection.",
+            "A due package appears with its owner and current state.",
+            "Operations marks it received, moving it to awaiting collection.",
             "When a teammate picks it up, one more action closes the case.",
-            "The timeline records who changed the state, and a stale or repeated action cannot overwrite the latest result.",
+            "The timeline records who changed the state, and repeated actions cannot overwrite the latest result.",
         ]),
-        (86.0, 24.620917, [
+        (86.0, 21.84, [
             "A scheduled service visit can be suggested from its time window and location.",
             "DoorSignal still asks a person to confirm.",
             "After hours, the same door event with no matching appointment becomes an unmatched arrival.",
             "It does not invent an identity or a threat score.",
             "It states what is known, marks the case for human review, and exposes only application-approved actions.",
         ]),
-        (118.0, 38.2, [
+        (118.0, 37.36, [
             "This is the live path.",
             "DoorSignal calls Ring's server-side API for device discovery, event history, and receive-only WHEP sessions.",
             "Signed webhook bytes are persisted before the response.",
             "DynamoDB Streams and EventBridge drive a retryable Lambda worker.",
-            "Nova 2 Lite is bounded to coarse scene facts; malformed or unavailable results become unknown.",
+            "Nova 2 Lite is bounded to coarse scene facts; unavailable results become unknown.",
             "Failed work goes to a dead-letter queue.",
-            "DoorSignal gives a small workplace the clarity of a front desk using the Ring devices it already has.",
+            "DoorSignal gives small workplaces the clarity of a front desk using Ring devices they already have.",
             "Guests know someone heard them. Teams know what needs action.",
             "From doorbell to done.",
         ]),
