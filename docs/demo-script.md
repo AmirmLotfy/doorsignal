@@ -1,6 +1,6 @@
 # DoorSignal demo script
 
-Final runtime: **2 minutes 45 seconds**. Language: English. Narration: Higgsfield Seed Audio 1.0 using the Kevin male preset and a warm, grounded delivery. Product footage is a real browser recording of the deployed judge demo. The official Ring playground insert remains pending Amazon Developer sign-in.
+Final runtime: **2 minutes 45 seconds**. Language: English. Narration: Higgsfield Seed Audio 1.0 using the Kevin male preset and a warm, grounded delivery. Product footage is a real browser recording of the deployed judge demo. The published edit truthfully shows the isolated Ring reconnect state. Official Playground API and WHEP verification completed after publication and is recorded separately in `docs/evidence/ring-playground-2026-09-10.md`.
 
 ## 0:00–0:10 — The problem and product
 
@@ -36,7 +36,7 @@ Final runtime: **2 minutes 45 seconds**. Language: English. Narration: Higgsfiel
 
 ## 2:05–2:30 — Ring and AWS evidence
 
-**Picture:** Use a compact split sequence: official Ring playground device/event screen after sign-in; DoorSignal's integration state; and the deployed DynamoDB → Streams → EventBridge → Lambda architecture. Do not show credentials or account secrets. The current AWS account blocks Nova Converse with `Operation not allowed`, so show the bounded unknown-on-failure behavior and do not claim a successful model response.
+**Picture:** The published edit uses DoorSignal's integration state and deployed DynamoDB → Streams → EventBridge → Lambda architecture. The official Ring Playground was verified separately after publication; no credential-bearing capture was inserted retroactively. The current AWS account blocks Nova Converse with `Operation not allowed`, so the edit shows the bounded unknown-on-failure behavior and does not claim a successful model response.
 
 **Voiceover:**
 

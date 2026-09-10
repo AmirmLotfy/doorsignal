@@ -25,7 +25,7 @@ The media outputs are intentionally ignored by Git because they are delivery art
 
 ## Provider-evidence gate
 
-The current edit accurately shows the deployed integration screen, including the reconnect state. Replace that short segment with an official Ring playground call after the account holder completes Amazon Developer sign-in. Do not represent the reconnect screen as successful live Ring evidence.
+The current published edit accurately shows the deployed integration screen in its isolated reconnect state. After publication, the authenticated official Ring Developer Playground returned successful device and account calls, HTTP 201 WHEP session creation, and HTTP 200 cleanup. That later verification is documented separately in `docs/evidence/ring-playground-2026-09-10.md`; it is not presented as footage in the current video.
 
 Amazon Bedrock returned `ValidationException: Operation not allowed` for Nova 2 Lite in the current AWS account. The video therefore describes and shows the validated unknown-on-failure boundary rather than claiming a successful model response.
 

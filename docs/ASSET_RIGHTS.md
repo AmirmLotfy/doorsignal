@@ -6,7 +6,7 @@ This record must be completed against the final exported video and submission ga
 |---|---|---|---|
 | DoorSignal logo icon and PNG exports | OpenAI internal image-generation model, generated for DoorSignal on 2026-09-10 | Original project asset; repository release under Apache-2.0 | Complete |
 | Product interface footage | Deployed DoorSignal judge demo recorded on 2026-09-10 at 1920 × 1080 | Original software and project recording; fictional isolated data | Complete |
-| Ring integration evidence | Official Ring playground/account screen recording | Submitted as factual product demonstration; redact credentials and unrelated account data | Pending final recording |
+| Ring integration evidence | Authenticated official Ring Developer Playground API and WHEP verification | Sanitized factual evidence record; no credential, device id, session id, or account id retained | Verified separately; not included in published video |
 | AWS integration evidence | Project AWS resources and invocation evidence | Submitted as factual product demonstration; redact credentials and unrelated resources | Pending final recording |
 | Devpost 3:2 thumbnail | OpenAI internal image-generation model for an original Ring-style doorway background, plus the deployed DoorSignal dashboard and DoorSignal logo | Original project composite; source background, browser capture, prompt, and deterministic composition script recorded in `assets/submission/` | Complete |
 | YouTube 16:9 thumbnail | OpenAI internal image-generation model for an original Ring-style doorway background, plus the deployed DoorSignal dashboard and DoorSignal logo | Original project composite; exact-size master, upload derivative, source background, prompt, and deterministic composition script recorded in `assets/submission/` | Complete |
@@ -16,4 +16,4 @@ This record must be completed against the final exported video and submission ga
 
 Accepted narration job ids: `026baf79-906a-4fb0-bcfe-e6db5b314af2`, `9974c5b2-26a0-4fc6-b282-4afb61edcdf6`, `bb9dcf74-9f30-4d79-9636-cbf6ed310a37`, `3596b99b-b09c-43d5-8447-d060b6ec7c65`, and `5ee1f036-1adc-4e4c-8cb6-30435dff9f38`.
 
-The current video master contains no stock footage, stock music, or third-party product photograph. Provider marks appear only to identify the integration being demonstrated. The official Ring playground capture remains pending because the Amazon Developer sign-in requires the account holder's credentials.
+The current video master contains no stock footage, stock music, or third-party product photograph. Provider marks appear only to identify the integration being demonstrated. Official Ring Playground verification completed after the master was published and is documented without credential-bearing footage.

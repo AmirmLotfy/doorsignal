@@ -28,9 +28,9 @@ MOBBIN-GATE: PASS for the approved dashboard refinement.
 - The full verification suite passes 40 tests, TypeScript checking for all workspaces, the clean Next.js production build, CDK synthesis, and the repository secret scan. Public GitHub Actions run `34432401013` passed the same release checks on commit `015601e`.
 - The Devpost image is 1536 × 1024 and below 5 MB. The YouTube master is 3840 × 2160 with a compressed upload copy. Source prompts and rights notes are saved with the assets.
 
-## Open evidence gates
+## Provider evidence and open gates
 
-- The official Ring playground login is awaiting the submitter's Amazon Developer authentication. Live device discovery, event history, WHEP, token-expiry recovery, and recorded evidence remain pending.
+- The authenticated official Ring Developer Playground returned successful device-list, discovery, status, capabilities, locations, configurations, users, and event-history responses. Package, vehicle, and motion simulations created WHEP sessions with HTTP 201; closing each live view deleted the same session with HTTP 200. The temporary token and synthetic identifiers were not persisted. See [the sanitized Ring evidence record](evidence/ring-playground-2026-09-10.md).
 - Both the active geo inference profile `us.amazon.nova-2-lite-v1:0` and supported in-region id `amazon.nova-2-lite-v1:0` return `ValidationException: Operation not allowed` for this AWS account. DoorSignal converts that provider failure to `unknown` as designed. A successful deployed Bedrock invocation remains an external account-support gate.
 - SES acceptance and inbox delivery are intentionally unclaimed until a verified, explicitly approved recipient is tested.
 - The final 2:45 screen recording of the verified hosted stories is public at `https://youtu.be/bX1VeK-_rTo` with open and uploaded English captions.

@@ -1,6 +1,6 @@
 # Developer tools feedback
 
-This document supplies evidence-based draft answers for the five required Devpost feedback questions. Final wording will include live Ring playground and deployed endpoint evidence collected before submission.
+This document supplies evidence-based answers for the five required Devpost feedback questions, including the official Ring Developer Playground checks and deployed endpoint evidence.
 
 ## 1. Which tools, APIs, and SDKs did you use, and for what?
 

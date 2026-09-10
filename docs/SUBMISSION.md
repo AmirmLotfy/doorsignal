@@ -113,7 +113,7 @@ The full [friction log](friction-log.md) and five [developer-tool feedback answe
 
 - Public product, deep links, QR flow, and HTTPS verified
 - Public repository, full Apache-2.0 license, CI, and clean secret scan verified
-- Official Ring calls and deployed Bedrock invocation recorded
+- Official Ring Playground calls and WHEP lifecycle recorded; deployed Bedrock denial and the product's `unknown` fallback recorded
 - Final video under three minutes, captions, gallery, thumbnails, and rights record reviewed
 - Judge kit under 35 MB reviewed
 - Submitter type, organization, residence, project history, and all three eligibility attestations answered by the submitter on September 10, 2026

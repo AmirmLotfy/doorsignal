@@ -65,7 +65,9 @@ https://github.com/AmirmLotfy/doorsignal
 
 ## Demo Video
 
-Pending final public YouTube upload. The 2:45 script, caption plan, thumbnail, and rights record are prepared in the repository.
+https://youtu.be/bX1VeK-_rTo
+
+The public video runs 2:45, uses the deployed judge demo, and includes English open captions plus an uploaded subtitle track.
 
 ## Screenshot Shot List
 
@@ -91,13 +93,12 @@ Pending final public YouTube upload. The 2:45 script, caption plan, thumbnail, a
 
 ## Known Limitations
 
-- Official Ring playground evidence awaits Amazon Developer login; playground credentials expire quickly.
+- The official Ring Developer Playground was verified with successful device/account calls and complete WHEP create/delete lifecycles. Its temporary token expires quickly and was never persisted; the public judge demo and published video retain the truthful isolated **Reconnect** state.
 - SES DKIM is verified, but the account remains in sandbox and no recipient has been approved for a delivery test.
 - CloudFront distribution creation is unavailable in the current AWS account, so the active deployment serves static assets from the Lambda package through API Gateway.
 - The final public video is live at `https://youtu.be/bX1VeK-_rTo` with English open captions, an uploaded English subtitle track, the custom thumbnail, and clean YouTube copyright and Community Guidelines checks.
 
 ## TODO Official Form Fields
 
-- Final Ring playground and Bedrock evidence wording.
 - Uploaded gallery and judge kit.
 - Codex session ID: `01a08839-a1f9-7f92-b4b4-6a2134861fbb`.

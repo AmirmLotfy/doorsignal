@@ -88,6 +88,8 @@ Content-Type: application/json
 
 Live Ring playground sessions are short-lived. When a token expires, DoorSignal shows **Reconnect** and stops making Ring requests. WHEP session URLs are accepted only from the Ring API origin and are deleted explicitly at the end of a view.
 
+The authenticated official Ring Developer Playground was verified on September 10, 2026. Device/account requests succeeded, WHEP creation returned HTTP 201, and cleanup returned HTTP 200. The temporary token and synthetic identifiers were not retained; see the [sanitized evidence record](docs/evidence/ring-playground-2026-09-10.md).
+
 ## Deploy to AWS
 
 ```bash
