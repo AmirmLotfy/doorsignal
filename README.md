@@ -1,175 +1,131 @@
 # DoorSignal
-> **The physical inbox for your business. Turn arrivals into workflows.**
 
-[![Hackathon Track: Ring](https://img.shields.io/badge/Amazon%20Hackathon-Ring%20Track-blue)](https://amazonappdev2026.devpost.com/)
-[![AWS Builder Mini Challenge](https://img.shields.io/badge/AWS%20Builder-Bedrock%20AgentCore-orange)](https://amazonappdev2026.devpost.com/)
-[![Zero Biometrics](https://img.shields.io/badge/Architecture-Zero--Biometric-teal)](#zero-biometric-architecture)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
+**Turn Ring door events into guest, delivery, and service workflows—with clear ownership and no facial recognition.**
 
----
+[![Amazon AppDev 2026: Ring](https://img.shields.io/badge/Amazon%20AppDev%202026-Ring-2f6959)](https://amazonappdev2026.devpost.com/)
+[![AWS Builder](https://img.shields.io/badge/AWS%20Builder-Nova%202%20Lite-cd6f45)](docs/ARCHITECTURE.md)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache--2.0-30302d.svg)](LICENSE)
 
-## 1. What is DoorSignal?
+![A Ring doorbell event flowing into the deployed DoorSignal arrival inbox](assets/submission/doorsignal-devpost-1536x1024.png)
 
-Small businesses and studios commonly suffer from four disconnected systems:
-1. **The front door**: Ring detects motion or button presses, but provides zero business context.
-2. **The calendar**: Google Workspace or Microsoft 365 knows who is expected.
-3. **Operations**: Delivery tracking and contractor work orders know what parcels and technicians are arriving.
-4. **The team**: Slack, Teams, email, or SMS is where the right person can actually act.
+DoorSignal gives a small workplace a shared arrival inbox. A signed Ring event becomes a durable case; expected-arrival context and a voluntary QR check-in help the host understand the visit; and an accountable person closes the loop. The judge demo is isolated from live Ring credentials and external email.
 
-None of these systems communicate with each other. A notification saying *"Motion detected at Front Door"* forces employees to stop work and open a security camera app just to see if it's the FedEx courier, a scheduled job candidate, or nobody.
+## What it demonstrates
 
-**DoorSignal connects them.** The Ring device becomes the **commercial sensor** for business workflows. When someone arrives, DoorSignal immediately resolves:
-- *Is this today's 10:30 interview?*
-- *Is this the electrician scheduled by operations?*
-- *Is this an expected UPS package delivery?*
-- *Is there no expected arrival at all?*
-- *Who inside the business should care, and what should happen next?*
+- **Guest:** a door event becomes an arrival case, the guest checks in from a printable QR sign, and the host response appears on the guest's phone.
+- **Delivery:** a due delivery moves from received to collected with a durable action history.
+- **Service or unmatched:** a scheduled visit can be associated tentatively; an after-hours event without context is sent to human review.
+- **Live Ring integration:** server-side device discovery, recent event import, signed v1.1 webhooks, and receive-only WHEP session creation and cleanup use `api.amazonvision.com`.
+- **AWS intelligence:** Amazon Nova 2 Lite through Bedrock Converse returns bounded, validated coarse scene information. It cannot identify a person or authorize an action.
 
----
+The system never uses facial recognition. A schedule suggests context; visitor check-in evidence or a human confirms it. Camera bytes stay in memory and are not stored by DoorSignal.
 
-## 2. Core Architectural Primitives
+## Architecture
 
-- **Arrival Intent**: Every real-world arrival is classified into one of 5 canonical operational intents: `GUEST`, `DELIVERY`, `SERVICE`, `PICKUP`, or `UNMATCHED`.
-- **Arrival Case**: A structured work item representing what happened, where, when, what context matched it, who owns it, and whether it was acknowledged or resolved.
-- **Zero-Biometric Resolution**: Identity is determined exclusively through operational context (appointment time, invitation token, voluntary QR scan, delivery log), never through facial recognition.
-- **Receive-Only WHEP Live View**: Strictly respects Ring's partner streaming boundaries (receive-only WebRTC) and partner watermarking compliance.
-- **Zero-Hardware Footprint**: Works with existing Ring devices paired with an ultra-lightweight, zero-install printable DoorSignal QR marker and mobile PWA.
-
----
-
-## 3. System Architecture
-
-```
-┌────────────────────────────────────────────────────────┐
-│ Ring Doorbell / Camera / Developer Playground          │
-└──────────────────────────┬─────────────────────────────┘
-                           │ (Webhook: button_press, motion, package)
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│ AWS API Gateway -> Lambda Webhook Receiver             │
-│ • HMAC-SHA256 Signature Verification                   │
-│ • DynamoDB 24h TTL Request Idempotency Deduplication   │
-└──────────────────────────┬─────────────────────────────┘
-                           │ (Normalized Domain Event)
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│ Amazon EventBridge Bus (doorsignal.bus)                │
-└──────────────┬───────────────────────────┬─────────────┘
-               │                           │
-               ▼                           ▼
-┌──────────────────────────────┐  ┌──────────────────────────────────┐
-│ Amazon Nova 2 Lite (Vision)  │  │ Arrival Resolver Engine          │
-│ • Coarse scene extraction    │  │ • Stage 1: Deterministic Filter  │
-│   (person count, packages)   │  │ • Stage 2: Heuristic Scoring     │
-│ • Zero facial recognition    │  │ • Stage 3: Bedrock AgentCore     │
-└──────────────┬───────────────┘  │   Runtime + Strands Agent Tools  │
-               │                  │ • Stage 4: AgentCore Policy      │
-               └─────────┬────────┤   (Hard block on door unlocks)   │
-                         │        └──────────────────┬───────────────┘
-                         ▼                           │
-              ┌──────────────────────┐               │
-              │ Arrival Case Engine  │◄──────────────┘
-              │ (Aurora PostgreSQL)  │
-              └──────────┬───────────┘
-                         │
-         ┌───────────────┴───────────────┐
-         ▼                               ▼
-┌──────────────────────────────┐  ┌──────────────────────────────────┐
-│ DoorSignal Web Dashboard     │  │ Visitor Check-in PWA             │
-│ • Screen 01: Today & Quiet   │  │ • Zero-install mobile web        │
-│ • Screen 02: Active Arrival  │  │ • Host notification status       │
-│ • Screen 03: Arrivals Ledger │  │ • Voluntary QR token check-in    │
-│ • Screen 04: Deliveries      │  └──────────────────────────────────┘
-│ • Screen 05: Workflows       │
-│ • Screen 06: Settings        │
-└──────────────────────────────┘
+```mermaid
+flowchart LR
+  Ring[Ring device or playground] -->|signed webhook| API[API Gateway and Lambda Web Adapter]
+  API -->|accept before reply| DB[(DynamoDB)]
+  DB -->|stream| Forwarder[Lambda forwarder]
+  Forwarder --> Bus[EventBridge]
+  Bus --> Worker[Lambda worker]
+  Worker --> Nova[Nova 2 Lite via Bedrock]
+  Worker --> SES[Amazon SES]
+  Worker --> DB
+  UI[Next.js operator and visitor UI] --> API
+  Domain[doorsignal.site] --> API
+  Cognito[Cognito operators] --> UI
 ```
 
----
+All application records share a site partition. The production store uses DynamoDB transactions and optimistic versions; local development uses a durable JSON file with atomic replacement and an inter-process lock. DynamoDB Streams persist the handoff before EventBridge and worker retries. Failed work goes to SQS.
 
-## 4. The 3 Winning Hackathon Scenarios
+See [architecture and trust boundaries](docs/ARCHITECTURE.md), [cost controls](docs/COSTS.md), and the [implementation evidence record](docs/IMPLEMENTATION.md).
 
-1. **Scenario A — Expected Guest (10:30 Interview)**:
-   - At 10:27 AM, candidate Alex Rivera arrives and rings the bell.
-   - DoorSignal correlates sensor event with Maya Patel's calendar and Alex's QR check-in token.
-   - Outcome: Resolved as *"Likely Maya's 10:30 interview (Arrived 3 min early · checked in)"*. Maya clicks `[ I'm on my way ]`.
-2. **Scenario B — Expected Delivery (FedEx Supplies)**:
-   - Delivery Entrance camera detects a package.
-   - Matched to Office Supplies due today.
-   - Outcome: Marked received by operations and logged into deliveries ledger.
-3. **Scenario C — After-Hours Service vs. Unmatched Arrival**:
-   - At 8:06 PM, a button press fires. With an AC maintenance work order on file, it matches the service contractor.
-   - Without an appointment, it resolves calmly to `UNMATCHED ARRIVAL` with options to notify on-call or view live. AgentCore Policy strictly blocks automated unlocking.
+## Run locally
 
----
+Prerequisites: Node.js 22+, Corepack, and pnpm 11.
 
-## 5. Quickstart & Local Development
-
-### Prerequisites
-- Node.js >= 20.0
-- pnpm >= 9.0
-
-### Installation
 ```bash
-# Clone the repository
-git clone https://github.com/your-org/doorsignal.git
+git clone https://github.com/AmirmLotfy/doorsignal.git
 cd doorsignal
-
-# Install all workspace dependencies
-pnpm install
+corepack enable
+pnpm install --frozen-lockfile
+cp .env.example .env.local
+pnpm dev
 ```
 
-### Run Unit Tests
+Open `http://localhost:3000`. Choose **Open the judge demo** to create an isolated fictional workspace. The local durable records and generated signing key are written beneath `.data/`, which is ignored by Git.
+
+Run the full local verification:
+
 ```bash
-pnpm test:unit
+pnpm verify
+pnpm infra:synth
+pnpm secrets:scan
 ```
-Executes test suites covering:
-- Ring HMAC-SHA256 signature verification & replay drift prevention
-- Stage 1 filtering and Stage 2 heuristic scoring formulas
-- Bedrock AgentCore Policy guardrail enforcement (blocking unlocks and biometrics)
-- Arrival Case state machine transition rules
 
-### Start Web Application & Demo Harness
+The test suite covers malformed and duplicate Ring deliveries, expired credentials, offline devices, WHEP cleanup, durable processing, site isolation, concurrency, invalid transitions, expired check-ins, model failure, notification retries, and the three demonstration stories.
+
+## Configure live integrations
+
+Deploy the CDK stack in `us-east-1`, then use an operator account in the Cognito `operators` group. Secrets Manager holds the short-lived Ring playground token, webhook secret, expected-arrivals API key hash, and approved SES recipient. Never put these values in environment files or source control.
+
+The expected-arrivals integration accepts a narrowly scoped bearer key:
+
+```http
+POST /api/v1/expected-arrivals
+Authorization: Bearer dsk_...
+Content-Type: application/json
+
+{
+  "kind": "GUEST",
+  "title": "Portfolio review",
+  "owner": "Maya",
+  "startsAt": "2026-09-12T10:30:00.000Z",
+  "endsAt": "2026-09-12T11:15:00.000Z"
+}
+```
+
+Live Ring playground sessions are short-lived. When a token expires, DoorSignal shows **Reconnect** and stops making Ring requests. WHEP session URLs are accepted only from the Ring API origin and are deleted explicitly at the end of a view.
+
+## Deploy to AWS
+
 ```bash
-pnpm --filter @doorsignal/web dev
-```
-Open **[http://localhost:3000](http://localhost:3000)** in your browser.
-
-Use the **Hackathon Demo Controls** bar at the top of the screen to trigger Scenario A, B, or C with one click!
-
-To experience the Visitor PWA, visit **[http://localhost:3000/visitor/northline](http://localhost:3000/visitor/northline)**.
-
----
-
-## 6. Monorepo Structure
-
-```
-doorsignal/
-├── apps/
-│   ├── web/                     # Employee & Admin Next.js 14 App
-│   └── visitor/                 # Zero-Install Visitor Check-in PWA
-├── services/
-│   ├── ring-webhooks/           # Lambda Webhook Ingest & HMAC Verifier
-│   ├── arrival-resolver/        # Deterministic + Bedrock AgentCore Engine
-│   ├── case-engine/             # Case CRUD, Candidate Evaluation & Actions
-│   └── notifications/           # Dispatcher (In-app, SES, Webhooks)
-├── packages/
-│   ├── db/                      # 17-table Drizzle ORM PostgreSQL schema
-│   ├── ring-client/             # Ring Partner API, WHEP & Simulation SDK
-│   ├── arrival-schema/          # Shared Zod types & State Machine
-│   ├── ui/                      # Ledger Palette design tokens & components
-│   └── events/                  # EventBridge domain topics & event bus
-├── infra/
-│   └── cdk/                     # AWS CDK TypeScript infrastructure
-└── docs/
-    ├── friction-log.md          # Ring Partner API & AgentCore friction log (10% bonus)
-    └── demo-script.md           # 3-minute video presentation script
+aws login
+pnpm verify
+pnpm package:web
+pnpm --filter @doorsignal/cdk deploy --require-approval never \
+  --context appUrl=https://doorsignal.site \
+  --context certificateArn=YOUR_US_EAST_1_ACM_CERTIFICATE_ARN
 ```
 
----
+The deployed stack creates isolated, tagged resources: Lambda, HTTP API Gateway, DynamoDB, EventBridge, SQS, Cognito, Secrets Manager, CloudWatch, SES permissions, SNS, and an AWS Budget. The current account serves the standalone Next.js application and its static assets through Lambda Web Adapter and an API Gateway custom domain. An optional CloudFront/private-S3 mode is available with `--context cloudFrontEnabled=true` for accounts permitted to create distributions. The stack creates no VPC, NAT gateway, relational database, provisioned server, or always-on compute.
 
-## 7. Submission Artifacts & Compliance
+The budget measures gross DoorSignal spend from September 10 through November 20, 2026. Alerts fire at US$25 and US$40; application throttles and the account's 10-execution regional Lambda quota limit usage. AWS Budgets is an alerting control, not a hard spending cap.
 
-- [Developer Friction Log](docs/friction-log.md): Details our runtime experience integrating Ring's WHEP stream, HMAC webhooks, and AWS Bedrock AgentCore Runtime (qualifying for the 10% Devpost bonus).
-- [3-Minute Demo Video Script](docs/demo-script.md): Precise timing and narrative script for the Devpost demonstration.
-- [License](LICENSE): Open-source Apache 2.0.
+## Data and access
+
+- Judge sessions use unique `judge:` partitions, expire after one day, and cannot read live accounts, call Ring or Bedrock, or send email.
+- Operator controls require a verified Cognito access token and membership in the `operators` group.
+- Visitor status links are signed, scoped to one check-in, and expire.
+- Live operational records expire after seven days. The Settings page provides an authenticated site-data deletion action.
+- Email states mean queued, accepted by SES, or failed. SES acceptance is not represented as inbox delivery.
+- Action links open a case; a state-changing request still requires an authenticated click and valid version.
+
+Read the public [privacy explanation](apps/web/src/app/privacy/page.tsx) and [security notes](docs/ARCHITECTURE.md).
+
+## Repository map
+
+```text
+apps/web/              Next.js 16 operator, public, and visitor interfaces
+packages/core/         Ring, persistence, workflows, auth, Bedrock, SES, workers
+infra/cdk/             Reproducible AWS CDK infrastructure
+tests/unit/            Contract and workflow verification
+assets/brand/          Source brand master and export assets
+docs/                  Architecture, evidence, demo, costs, feedback, friction
+scripts/               Packaging and secret-scanning utilities
+```
+
+## Open source
+
+DoorSignal was created during the Amazon AppDev Challenge 2026 submission period. Source code, infrastructure, test fixtures, documentation, and original brand assets are released under the [Apache License 2.0](LICENSE). Third-party service names and trademarks remain the property of their respective owners.

@@ -1,63 +1,61 @@
-# DoorSignal: 3-Minute Hackathon Demo Script
-*Submission Video Walkthrough for Ring Track & AWS Builder Mini Challenge*
+# DoorSignal demo script
 
----
+Target runtime: **2 minutes 45 seconds**. Language: English. Narration: a natural male voice, conversational and unhurried. Product footage must be a real browser recording. On-screen provider evidence must come from the official Ring playground and the deployed AWS account.
 
-## 0:00 – 0:15 | The Problem & Thesis
-- **Visual**: DoorSignal Dashboard in Quiet State (`Today · Front Entry · Quiet · No active arrival`).
-- **Voiceover**: 
-  > "Small businesses and studios already have a camera at the door, meetings on a calendar, deliveries in email, and usually no receptionist. None of those systems know what the others know. Ring alerts you that 'motion was detected'—which tells you almost nothing. DoorSignal changes that. It's the physical inbox for your business, turning arrivals into actionable workflows."
+## 0:00–0:10 — The problem and product
 
----
+**Picture:** A natural doorway detail cuts to DoorSignal's quiet inbox and logo. Title: **From doorbell to done.**
 
-## 0:15 – 0:50 | Scenario A: Expected Guest (Interview with Maya Patel)
-- **Visual**: Click "Scenario A" in the demo bar or fire Ring Playground `button_press`.
-- **UI Transition**: Quiet state immediately transforms into the **Active Arrival Card**:
-  - Live Ring preview with compliance watermark.
-  - Intent: `LIKELY EXPECTED ARRIVAL`.
-  - Title: `Candidate interview with Maya Patel (10:30 – 11:15)`.
-  - Explainability: `✓ Arrived 3 min early · ✓ Correct location · ✓ Guest checked in with token`.
-- **Action**: Click `[ Notify Maya ]` -> Status notification appears -> Click `[ I'm on my way ]`.
-- **Cut to Mobile PWA (`/visitor/northline`)**: Visitor screen confirms: `"Maya Patel has been notified. Please wait by the entrance."`
-- **Voiceover**:
-  > "Alex arrives 3 minutes early for his 10:30 design interview. When he rings the bell, DoorSignal doesn't run facial recognition. It correlates the sensor event with Maya's calendar and his QR check-in token. Maya receives the Door Card, clicks 'On my way', and Alex's phone immediately tells him she's coming down. Zero biometrics. Pure operational context."
+**Voiceover:**
 
----
+> A doorbell can tell you someone arrived. It cannot tell your team why they are there, who owns the visit, or what happened next. DoorSignal turns Ring events into a shared arrival inbox.
 
-## 0:50 – 1:25 | Scenario B: Package Arrival (FedEx Office Supplies)
-- **Visual**: Click "Scenario B" in the demo bar. Ring Stick Up Cam at Delivery Entrance detects package.
-- **UI Transition**: Active card updates:
-  - Intent: `EXPECTED DELIVERY`.
-  - Title: `Office Supplies (FedEx) · Due Today`.
-  - Sensor: `Delivery Entrance`.
-- **Action**: Click `[ Mark Received ]` -> Case resolves and appears instantly on the `/deliveries` board under `Awaiting Collection`.
-- **Voiceover**:
-  > "At 2:14 PM, FedEx rings the Delivery Entrance. DoorSignal matches the package event with scheduled office supplies due today. Operations marks it received with one tap, notifying the team. When Sarah grabs it later, she marks it collected. Simple, calm delivery operations."
+## 0:10–1:00 — Guest check-in and acknowledgment
 
----
+**Picture:** In the judge replay, choose Guest. Show the new arrival, print-sign QR, and scan/open the visitor link in a separate phone-size browser. Enter a fictional guest name, consent, and check in. Return to the host inbox, show the check-in evidence, and select **I'm on my way**. Return to the visitor page after its polling refresh.
 
-## 1:25 – 2:05 | Scenario C: After-Hours Service vs Unmatched Arrival
-- **Visual**: Click "Scenario C". Button press at 8:06 PM.
-- **UI Transition**: First run shows AC maintenance appointment match.
-- **Counter Scenario**: Remove service appointment and re-trigger.
-- **UI Transition**: Case resolves to `UNMATCHED ARRIVAL`:
-  - `No visit, delivery or service appointment is scheduled.`
-  - Options: `[ Notify on-call ]` `[ View live ]` `[ Dismiss ]`.
-- **Voiceover**:
-  > "Notice what happens when someone arrives after hours with no scheduled appointment. DoorSignal doesn't label them a 'suspicious intruder' or invent threat scores. It reports the objective truth: 'Unmatched arrival. No visit or delivery is scheduled.' The on-call supervisor can view the receive-only live stream or dismiss it. DoorSignal's AgentCore policy strictly forbids automated door unlocking."
+**Voiceover:**
 
----
+> Here is a guest arriving for a scheduled visit. DoorSignal records the event as a case and keeps the schedule match tentative. The sign opens a check-in page on the guest's own phone—no app and no camera permission. The guest shares a name and visit type, with consent. That check-in is stronger evidence, so the case updates. The host sees a clear reason, takes ownership, and responds. A moment later, the guest's page says the host is on the way. Every step is saved, and no facial recognition is used.
 
-## 2:05 – 2:40 | Architecture & AWS Intelligence
-- **Visual**: Architecture diagram overlay showing:
-  - `Ring Device / Playground` -> `API Gateway` -> `HMAC Verifier` -> `EventBridge` -> `AgentCore Runtime + Strands` -> `AgentCore Policy` -> `DoorSignal Web App`.
-  - Highlight Bedrock AgentCore trace log showing deterministic filter -> scoring -> tool calls -> policy check.
-- **Voiceover**:
-  > "Under the hood, DoorSignal pairs the Ring Partner API with AWS Bedrock AgentCore Runtime. EventBridge handles the real-time event pipeline, while Strands agents query calendar and check-in tools. Crucially, AgentCore Policy acts as a hard guardrail: the agent can never trigger physical locks or access biometrics."
+## 1:00–1:35 — Delivery lifecycle
 
----
+**Picture:** Choose Delivery. Show the delivery case, mark it received, open Deliveries, then mark it collected. Keep the lifecycle and timestamps visible.
 
-## 2:40 – 3:00 | Conclusion & Vision
-- **Visual**: Settings & Privacy Center showing Ring data purge button, then the DoorSignal brand mark `│•│`.
-- **Voiceover**:
-  > "DoorSignal turns Ring into a commercial sensor for business software. No kiosks. No receptionist. No new hardware. Turn arrivals into workflows."
+**Voiceover:**
+
+> Deliveries use the same calm handoff. A due package appears with an owner and its current state. Operations marks it received, so it moves to awaiting collection. When a teammate picks it up, one more action closes the case. The timeline records who changed the state, and a stale or repeated action cannot overwrite the latest result.
+
+## 1:35–2:05 — Scheduled service and unmatched arrival
+
+**Picture:** Show Scheduled service, then Unmatched after hours. Pause on the objective reason and the **Human review** label. Dismiss the fictional unmatched case.
+
+**Voiceover:**
+
+> A scheduled service visit can be suggested from its time window and location. DoorSignal still asks a person to confirm. After hours, the same door event with no matching appointment becomes an unmatched arrival. It does not invent an identity or a threat score. It states what is known, marks the case for human review, and exposes only application-approved actions.
+
+## 2:05–2:30 — Ring and AWS evidence
+
+**Picture:** Use a compact split sequence: official Ring playground token/device screen; DoorSignal's live integration status and imported event; an evidence row for a successful Ring API request; AWS console/CLI evidence for DynamoDB → Streams → EventBridge → Lambda; and a successful Nova 2 Lite Converse invocation with its bounded usage. Do not show credentials or account secrets.
+
+**Voiceover:**
+
+> This is the live path. DoorSignal calls Ring's server-side API for device discovery, event history, and receive-only WHEP sessions. Signed webhook bytes are persisted before the response. DynamoDB Streams and EventBridge drive a retryable Lambda worker. Nova 2 Lite returns only bounded scene facts; malformed or unavailable results become unknown. Failed work goes to a dead-letter queue.
+
+## 2:30–2:45 — Customer value and close
+
+**Picture:** Return to the resolved inbox, show the privacy line, then the DoorSignal lockup and URL.
+
+**Voiceover:**
+
+> DoorSignal gives a small workplace the clarity of a front desk using the Ring devices it already has. Guests know someone heard them. Teams know what needs action. From doorbell to done.
+
+## Recording and edit notes
+
+- Record the deployed site at 1440p or higher and deliver at 1920 × 1080, 30 fps.
+- Show the **Demo replay · fictional data** label whenever replay data is on screen.
+- Use tight cursor movement and one action per cut. Avoid browser chrome where it does not establish official provider evidence.
+- Redact access tokens, webhook secrets, email addresses, AWS account identifiers, request IDs that carry secrets, and any unrelated account resources.
+- Use narration-led cuts; keep interface audio muted.
+- Mix instrumental music at least 18 dB beneath normal speech and fade it under provider evidence.
+- Captions must match the final spoken edit rather than this draft if timing corrections change wording.

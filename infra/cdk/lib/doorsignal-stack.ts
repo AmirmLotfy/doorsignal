@@ -1,105 +1,62 @@
-import * as cdk from 'aws-cdk-lib';
+import path from 'node:path';
+import { Stack, StackProps, Duration, RemovalPolicy, CfnOutput, Tags, aws_dynamodb as dynamodb, aws_lambda as lambda, aws_lambda_nodejs as nodejs, aws_lambda_event_sources as sources, aws_events as events, aws_events_targets as targets, aws_sqs as sqs, aws_secretsmanager as secrets, aws_iam as iam, aws_logs as logs, aws_apigatewayv2 as apigateway, aws_apigatewayv2_integrations as integrations, aws_cloudfront as cloudfront, aws_cloudfront_origins as origins, aws_s3 as s3, aws_s3_deployment as deployment, aws_cognito as cognito, aws_certificatemanager as acm, aws_budgets as budgets, aws_sns as sns, aws_sns_subscriptions as subscriptions, aws_cloudwatch as cloudwatch, aws_cloudwatch_actions as actions } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
-import * as events from 'aws-cdk-lib/aws-events';
-import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as kms from 'aws-cdk-lib/aws-kms';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
-import * as apigwv2Integrations from 'aws-cdk-lib/aws-apigatewayv2-integrations';
-import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
-
-export class DoorSignalStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+export class DoorSignalStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
-
-    // 1. Secrets Manager for Ring Partner Credentials & HMAC Webhook Secret
-    const ringSecret = new secretsmanager.Secret(this, 'RingCredentialsSecret', {
-      secretName: 'doorsignal/ring/credentials',
-      description: 'Ring Partner API OAuth tokens and Webhook HMAC secret'
-    });
-
-    // 2. DynamoDB Table for Ring Request Idempotency (24h TTL)
-    const idempotencyTable = new dynamodb.Table(this, 'RingIdempotencyTable', {
-      tableName: 'doorsignal_ring_dedup',
-      partitionKey: { name: 'requestId', type: dynamodb.AttributeType.STRING },
-      timeToLiveAttribute: 'ttl',
-      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-      removalPolicy: cdk.RemovalPolicy.DESTROY
-    });
-
-    // 3. EventBridge Custom Event Bus for Normalized Domain Events
-    const eventBus = new events.EventBus(this, 'DoorSignalEventBus', {
-      eventBusName: 'doorsignal.bus'
-    });
-
-    // 4. S3 Bucket for Ephemeral Ring Snapshots (KMS-encrypted + 1-hour expiration lifecycle)
-    const mediaKey = new kms.Key(this, 'MediaEncryptionKey', {
-      enableKeyRotation: true,
-      description: 'KMS key for temporary DoorSignal Ring snapshots'
-    });
-
-    const mediaBucket = new s3.Bucket(this, 'EphemeralMediaBucket', {
-      bucketName: `doorsignal-media-${this.account}-${this.region}`,
-      encryption: s3.BucketEncryption.KMS,
-      encryptionKey: mediaKey,
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-      lifecycleRules: [
-        {
-          id: 'ExpireSnapshotsAfter1Hour',
-          expiration: cdk.Duration.hours(1)
-        }
-      ],
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      autoDeleteObjects: true
-    });
-
-    // 5. Lambda Function: Webhook Ingestion & HMAC Verification
-    const webhookFn = new lambda.Function(this, 'RingWebhookFunction', {
-      runtime: lambda.Runtime.NODEJS_20_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromInline(`
-        exports.handler = async (event) => {
-          console.log("Ring Webhook received:", event.headers);
-          return { statusCode: 200, body: JSON.stringify({ status: "accepted" }) };
-        };
-      `),
-      environment: {
-        RING_SECRET_ARN: ringSecret.secretArn,
-        DEDUP_TABLE_NAME: idempotencyTable.tableName,
-        EVENT_BUS_NAME: eventBus.eventBusName
-      },
-      timeout: cdk.Duration.seconds(10)
-    });
-
-    ringSecret.grantRead(webhookFn);
-    idempotencyTable.grantReadWriteData(webhookFn);
-    eventBus.grantPutEventsTo(webhookFn);
-
-    // 6. HTTP API Gateway
-    const httpApi = new apigwv2.HttpApi(this, 'DoorSignalHttpApi', {
-      apiName: 'doorsignal-api',
-      description: 'Public Webhook & Client API for DoorSignal'
-    });
-
-    httpApi.addRoutes({
-      path: '/api/webhooks/ring',
-      methods: [apigwv2.HttpMethod.POST],
-      integration: new apigwv2Integrations.HttpLambdaIntegration('RingWebhookIntegration', webhookFn)
-    });
-
-    // 7. CloudFormation Outputs
-    new cdk.CfnOutput(this, 'ApiEndpointUrl', {
-      value: httpApi.url || '',
-      description: 'Public API Gateway Webhook URL'
-    });
-    new cdk.CfnOutput(this, 'EventBusArn', {
-      value: eventBus.eventBusArn,
-      description: 'EventBridge Bus ARN'
-    });
-    new cdk.CfnOutput(this, 'MediaBucketName', {
-      value: mediaBucket.bucketName,
-      description: 'S3 Ephemeral Media Bucket'
-    });
+    Tags.of(this).add('Project', 'DoorSignal'); Tags.of(this).add('Purpose', 'AmazonAppDev2026'); Tags.of(this).add('Owner', 'AmirmLotfy'); Tags.of(this).add('ReviewAfter', '2026-11-20');
+    const root = path.resolve(__dirname, '../../..');
+    const appUrl = this.node.tryGetContext('appUrl') || 'https://doorsignal.site';
+    const certificateArn = this.node.tryGetContext('certificateArn');
+    const cloudFrontEnabled = this.node.tryGetContext('cloudFrontEnabled') === 'true';
+    const table = new dynamodb.Table(this, 'Records', { partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING }, sortKey: { name: 'sk', type: dynamodb.AttributeType.STRING }, billingMode: dynamodb.BillingMode.PAY_PER_REQUEST, maxReadRequestUnits: 25, maxWriteRequestUnits: 25, timeToLiveAttribute: 'expiresAt', stream: dynamodb.StreamViewType.NEW_IMAGE, encryption: dynamodb.TableEncryption.AWS_MANAGED, deletionProtection: true, removalPolicy: RemovalPolicy.RETAIN });
+    const secret = new secrets.Secret(this, 'Configuration', { description: 'DoorSignal session signing, Ring playground credentials, and approved email recipient.', generateSecretString: { secretStringTemplate: '{}', generateStringKey: 'signingKey', passwordLength: 64, excludePunctuation: true }, removalPolicy: RemovalPolicy.RETAIN });
+    const deadLetters = new sqs.Queue(this, 'DeadLetters', { encryption: sqs.QueueEncryption.SQS_MANAGED, retentionPeriod: Duration.days(14), enforceSSL: true });
+    const eventBus = new events.EventBus(this, 'ArrivalEvents', { eventBusName: 'doorsignal-events' });
+    const common = { DOORSIGNAL_TABLE: table.tableName, DOORSIGNAL_SECRET_ARN: secret.secretArn, APP_URL: appUrl, BEDROCK_ENABLED: 'true', BEDROCK_MODEL_ID: 'us.amazon.nova-2-lite-v1:0', SES_FROM: 'notifications@doorsignal.site', SERVICE_ENDS_AT: '2026-11-21T00:00:00Z' };
+    const runtime = lambda.Runtime.NODEJS_22_X;
+    const forwarder = new nodejs.NodejsFunction(this, 'StreamForwarder', { entry: path.join(root,'packages/core/src/workers.ts'), handler: 'forwardStream', runtime, architecture: lambda.Architecture.ARM_64, memorySize: 256, timeout: Duration.seconds(20), environment: { EVENT_BUS_NAME: eventBus.eventBusName }, bundling: { minify: true, sourceMap: false, externalModules: [] }, logGroup: new logs.LogGroup(this,'ForwarderLogs',{ retention: logs.RetentionDays.ONE_WEEK, removalPolicy: RemovalPolicy.DESTROY }) });
+    table.grantStreamRead(forwarder); eventBus.grantPutEventsTo(forwarder);
+    forwarder.addEventSource(new sources.DynamoEventSource(table,{ startingPosition: lambda.StartingPosition.TRIM_HORIZON, batchSize: 10, maxBatchingWindow: Duration.seconds(1), bisectBatchOnError: true, reportBatchItemFailures: true, retryAttempts: 5, maxRecordAge: Duration.hours(6), onFailure: new sources.SqsDlq(deadLetters), filters: [lambda.FilterCriteria.filter({ eventName: lambda.FilterRule.isEqual('INSERT') })] }));
+    const worker = new nodejs.NodejsFunction(this, 'ArrivalWorker', { entry: path.join(root,'packages/core/src/workers.ts'), handler: 'processWork', runtime, architecture: lambda.Architecture.ARM_64, memorySize: 512, timeout: Duration.seconds(45), retryAttempts: 2, deadLetterQueue: deadLetters, environment: common, bundling: { minify: true, sourceMap: false, externalModules: [] }, logGroup: new logs.LogGroup(this,'WorkerLogs',{ retention: logs.RetentionDays.ONE_WEEK, removalPolicy: RemovalPolicy.DESTROY }) });
+    table.grantReadWriteData(worker); secret.grantRead(worker);
+    new events.Rule(this, 'ProcessArrivals', { eventBus, eventPattern: { source:['doorsignal'], detailType:['RingEventAccepted','EmailQueued'] }, targets: [new targets.LambdaFunction(worker, { deadLetterQueue: deadLetters, retryAttempts: 3, maxEventAge: Duration.hours(6) })] });
+    const pool = new cognito.UserPool(this,'Operators',{ selfSignUpEnabled:false, signInAliases:{ username:true }, mfa:cognito.Mfa.OPTIONAL, mfaSecondFactor:{otp:true,sms:false}, passwordPolicy:{minLength:16,requireDigits:true,requireLowercase:true,requireUppercase:true,requireSymbols:true}, removalPolicy:RemovalPolicy.RETAIN, accountRecovery:cognito.AccountRecovery.NONE });
+    new cognito.CfnUserPoolGroup(this,'OperatorGroup',{userPoolId:pool.userPoolId,groupName:'operators'});
+    const domain = pool.addDomain('Domain',{cognitoDomain:{domainPrefix:`doorsignal-${this.account}`}});
+    const appClient=pool.addClient('Browser',{generateSecret:false,authFlows:{userSrp:true},preventUserExistenceErrors:true,accessTokenValidity:Duration.hours(1),idTokenValidity:Duration.hours(1),oAuth:{flows:{authorizationCodeGrant:true},scopes:[cognito.OAuthScope.OPENID,cognito.OAuthScope.EMAIL],callbackUrls:[`${appUrl}/api/auth/callback`],logoutUrls:[appUrl]}});
+    const web = new lambda.Function(this,'Web',{runtime,architecture:lambda.Architecture.ARM_64,code:lambda.Code.fromAsset(path.join(root,'artifacts/deploy/web')),handler:'run.sh',memorySize:768,timeout:Duration.seconds(29),layers:[lambda.LayerVersion.fromLayerVersionArn(this,'WebAdapter',`arn:aws:lambda:${this.region}:753240598075:layer:LambdaAdapterLayerArm64:28`)],environment:{...common,COGNITO_USER_POOL_ID:pool.userPoolId,COGNITO_CLIENT_ID:appClient.userPoolClientId,COGNITO_DOMAIN:domain.domainName+'.auth.us-east-1.amazoncognito.com',AWS_LAMBDA_EXEC_WRAPPER:'/opt/bootstrap',AWS_LWA_PORT:'8080',PORT:'8080',AWS_LWA_READINESS_CHECK_PATH:'/api/health',AWS_LWA_READINESS_CHECK_HEALTHY_STATUS:'200',AWS_LWA_ASYNC_INIT:'true',NODE_ENV:'production'},logGroup:new logs.LogGroup(this,'WebLogs',{retention:logs.RetentionDays.ONE_WEEK,removalPolicy:RemovalPolicy.DESTROY})});
+    table.grantReadWriteData(web); secret.grantRead(web); secret.grantWrite(web);
+    const bedrockPolicy = new iam.PolicyStatement({ actions:['bedrock:InvokeModel'], resources:[`arn:aws:bedrock:us-east-1:${this.account}:inference-profile/us.amazon.nova-2-lite-v1:0`,...['us-east-1','us-east-2','us-west-2'].map(region=>`arn:aws:bedrock:${region}::foundation-model/amazon.nova-2-lite-v1:0`)] });
+    web.addToRolePolicy(bedrockPolicy); worker.addToRolePolicy(bedrockPolicy);
+    worker.addToRolePolicy(new iam.PolicyStatement({actions:['ses:SendEmail'],resources:[`arn:aws:ses:us-east-1:${this.account}:identity/doorsignal.site`],conditions:{StringEquals:{'ses:FromAddress':'notifications@doorsignal.site'}}}));
+    const api = new apigateway.HttpApi(this,'Api',{defaultIntegration:new integrations.HttpLambdaIntegration('WebIntegration',web),createDefaultStage:true});
+    const stage=api.defaultStage!.node.defaultChild as apigateway.CfnStage; stage.defaultRouteSettings={throttlingBurstLimit:10,throttlingRateLimit:5};
+    let hostingDomain = `${api.apiId}.execute-api.${this.region}.amazonaws.com`;
+    let hostingMode = 'api-gateway';
+    let assetsBucket = 'served-by-web-lambda';
+    if (cloudFrontEnabled) {
+      const assets=new s3.Bucket(this,'Assets',{blockPublicAccess:s3.BlockPublicAccess.BLOCK_ALL,enforceSSL:true,encryption:s3.BucketEncryption.S3_MANAGED,removalPolicy:RemovalPolicy.RETAIN,versioned:false});
+      const assetOrigin=origins.S3BucketOrigin.withOriginAccessControl(assets);
+      const redirect=new cloudfront.Function(this,'WwwRedirect',{code:cloudfront.FunctionCode.fromInline(`function handler(event){var r=event.request;if(r.headers.host.value==='www.doorsignal.site'){return {statusCode:308,statusDescription:'Permanent Redirect',headers:{location:{value:'https://doorsignal.site'+r.uri}}};}return r;}`)});
+      const distribution=new cloudfront.Distribution(this,'FrontDoor',{comment:'DoorSignal hackathon frontend',priceClass:cloudfront.PriceClass.PRICE_CLASS_100,domainNames:certificateArn?['doorsignal.site','www.doorsignal.site']:undefined,certificate:certificateArn?acm.Certificate.fromCertificateArn(this,'Certificate',certificateArn):undefined,defaultBehavior:{origin:new origins.HttpOrigin(`${api.apiId}.execute-api.${this.region}.amazonaws.com`),allowedMethods:cloudfront.AllowedMethods.ALLOW_ALL,cachePolicy:cloudfront.CachePolicy.CACHING_DISABLED,originRequestPolicy:cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,viewerProtocolPolicy:cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,compress:true,functionAssociations:[{function:redirect,eventType:cloudfront.FunctionEventType.VIEWER_REQUEST}]},additionalBehaviors:{'_next/static/*':{origin:assetOrigin,viewerProtocolPolicy:cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,cachePolicy:cloudfront.CachePolicy.CACHING_OPTIMIZED,compress:true},'brand/*':{origin:assetOrigin,viewerProtocolPolicy:cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,cachePolicy:cloudfront.CachePolicy.CACHING_OPTIMIZED,compress:true}}});
+      new deployment.BucketDeployment(this,'UploadAssets',{sources:[deployment.Source.asset(path.join(root,'artifacts/deploy/assets'))],destinationBucket:assets,prune:false,memoryLimit:256,logRetention:logs.RetentionDays.ONE_WEEK});
+      hostingDomain=distribution.distributionDomainName; hostingMode='cloudfront-private-s3'; assetsBucket=assets.bucketName;
+    } else if (certificateArn) {
+      const certificate=acm.Certificate.fromCertificateArn(this,'ApiCertificate',certificateArn);
+      const apex=new apigateway.DomainName(this,'ApexDomain',{domainName:'doorsignal.site',certificate});
+      const www=new apigateway.DomainName(this,'WwwDomain',{domainName:'www.doorsignal.site',certificate});
+      new apigateway.ApiMapping(this,'ApexMapping',{api,domainName:apex,stage:api.defaultStage});
+      new apigateway.ApiMapping(this,'WwwMapping',{api,domainName:www,stage:api.defaultStage});
+      hostingDomain=apex.regionalDomainName;
+    }
+    const alerts=new sns.Topic(this,'CostAlerts',{displayName:'DoorSignal cost and processing alerts'});
+    alerts.addToResourcePolicy(new iam.PolicyStatement({principals:[new iam.ServicePrincipal('budgets.amazonaws.com')],actions:['sns:Publish'],resources:[alerts.topicArn],conditions:{StringEquals:{'aws:SourceAccount':this.account}}}));
+    const alertQueue=new sqs.Queue(this,'AlertInbox',{encryption:sqs.QueueEncryption.SQS_MANAGED,retentionPeriod:Duration.days(14),enforceSSL:true});
+    alerts.addSubscription(new subscriptions.SqsSubscription(alertQueue));
+    new budgets.CfnBudget(this,'HackathonBudget',{budget:{budgetName:'DoorSignal-50-through-Nov20-2026',budgetType:'COST',timeUnit:'CUSTOM',timePeriod:{start:'1788998400',end:'1795219200'},budgetLimit:{amount:50,unit:'USD'},costFilters:{TagKeyValue:['user:Project$DoorSignal']},costTypes:{includeCredit:false,includeRefund:false,includeTax:true,useBlended:false}},notificationsWithSubscribers:[25,40].map(threshold=>({notification:{notificationType:'ACTUAL',comparisonOperator:'GREATER_THAN',threshold,thresholdType:'ABSOLUTE_VALUE'},subscribers:[{subscriptionType:'SNS',address:alerts.topicArn}]}))});
+    const dlqAlarm=new cloudwatch.Alarm(this,'FailedWorkAlarm',{metric:deadLetters.metricApproximateNumberOfMessagesVisible(),threshold:1,evaluationPeriods:1,treatMissingData:cloudwatch.TreatMissingData.NOT_BREACHING});dlqAlarm.addAlarmAction(new actions.SnsAction(alerts));
+    const errors=new cloudwatch.Alarm(this,'WebErrorAlarm',{metric:web.metricErrors({period:Duration.minutes(5)}),threshold:5,evaluationPeriods:1,treatMissingData:cloudwatch.TreatMissingData.NOT_BREACHING});errors.addAlarmAction(new actions.SnsAction(alerts));
+    for(const [name,value] of Object.entries({HostingDomain:hostingDomain,HostingMode:hostingMode,AppUrl:appUrl,TableName:table.tableName,ConfigurationSecretArn:secret.secretArn,WebFunctionName:web.functionName,WorkerFunctionName:worker.functionName,UserPoolId:pool.userPoolId,ClientId:appClient.userPoolClientId,UserPoolDomain:domain.domainName,AssetsBucket:assetsBucket,AlertsTopic:alerts.topicArn,AlertQueueUrl:alertQueue.queueUrl,DeadLetterQueueUrl:deadLetters.queueUrl})) new CfnOutput(this,name,{value});
   }
 }

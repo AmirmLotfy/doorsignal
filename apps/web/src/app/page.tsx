@@ -1,5 +1,11 @@
-import { redirect } from 'next/navigation';
-
-export default function HomePage() {
-  redirect('/today');
+import Link from 'next/link';
+import { Brand } from '@/components/Brand';
+import { StartDemo } from '@/components/StartDemo';
+export default function Home() {
+  return <div className="landing"><header className="public-nav"><Link href="/" aria-label="DoorSignal home"><Brand /></Link><nav aria-label="Main"><a href="#how-it-works">How it works</a><a href="/api/auth/login">Operator sign in ↗</a></nav></header>
+    <main id="main"><section className="hero"><div className="hero-copy"><p className="eyebrow"><span className="dot" /> A calmer way to welcome people</p><h1>From doorbell<br />to <em>done.</em></h1><p className="hero-description">Someone’s at the door. Give the arrival a reason, an owner, and a next step.</p><StartDemo /><p className="quiet hero-note">No account needed. An isolated replay with fictional arrivals.</p></div>
+      <div className="hero-scene" aria-label="DoorSignal workflow illustration"><div className="architectural-door"><div className="door-frame"><div className="door-panel"><span className="door-handle" /></div><span className="doorbell-shape" /></div><div className="threshold" /></div><div className="arrival-slip"><span className="slip-icon">↗</span><div><p>Maya has checked in</p><span>Alex is on the way</span></div><span className="check-circle">✓</span></div><p className="scene-caption">A clear handoff, right at the threshold.</p></div></section>
+      <section id="how-it-works" className="how"><div className="section-intro"><p className="eyebrow">Built for the everyday arrival</p><h2>The doorbell starts it.<br />Your team takes it from here.</h2></div><div className="story-columns"><article><span>01 / Guests</span><h3>A welcome, without the wait.</h3><p>A visitor checks in. Their host sees the reason for the visit and acknowledges it. The visitor’s phone shows the real response.</p></article><article><span>02 / Deliveries</span><h3>Received isn’t the last step.</h3><p>Keep the delivery visible after it reaches reception, until someone marks it collected.</p></article><article><span>03 / Services</span><h3>Context before conclusions.</h3><p>Compare an arrival with the expected service window. Unmatched arrivals stay with a person for review.</p></article></div></section>
+      <section className="privacy-note"><span className="privacy-mark" aria-hidden="true">◌</span><div><h2>Context, with care.</h2><p>No facial recognition. Camera images are processed without default retention. A schedule suggests a match; people and check-in evidence confirm it.</p></div><Link className="text-link" href="/privacy">How data is handled ↗</Link></section>
+    </main><footer className="public-footer"><Brand /><span>Built with Ring and AWS for Build, Ship, Shape 2026.</span><a href="https://github.com/AmirmLotfy/doorsignal">Open source ↗</a></footer></div>;
 }

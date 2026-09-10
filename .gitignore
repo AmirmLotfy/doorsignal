@@ -19,5 +19,8 @@ coverage
 cdk.out/
 infra/cdk/cdk.context.json
 artifacts/private/
+artifacts/deploy/
+artifacts/evidence/
+assets/submission/*-v2.*
 *.pem
 *.key

@@ -1,0 +1,24 @@
+{
+  "hackathon": {
+    "name": "Build, Ship, Shape: Amazon Developer Hackathon",
+    "slug": "amazonappdev2026",
+    "url": "https://amazonappdev2026.devpost.com/"
+  },
+  "rules_acknowledged": true,
+  "completed_stages": [
+    "start-hackathon",
+    "review-hackathon-rules",
+    "resources"
+  ],
+  "current_stage": "prepare-submission",
+  "next_command": "prepare-submission",
+  "submission": {
+    "status": "drafting",
+    "draft_file": "devpost-submission.md"
+  },
+  "project": {
+    "name": "DoorSignal",
+    "slug": "doorsignal",
+    "id": 1423199
+  }
+}

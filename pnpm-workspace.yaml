@@ -1,10 +1,12 @@
 packages:
-  - 'apps/*'
-  - 'services/*'
-  - 'packages/*'
-
+  - 'apps/web'
+  - 'packages/core'
+  - 'infra/cdk'
 allowBuilds:
   esbuild: true
-
-onlyBuiltDependencies:
-  - esbuild
+  sharp: true
+minimumReleaseAgeExclude:
+  - aws-cdk@2.1141.0
+  - react-dom@19.3.0
+  - react@19.3.0
+  - scheduler@0.28.0

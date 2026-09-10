@@ -1,36 +1,63 @@
-# DoorSignal: Developer Friction Log
-*Ring Partner API, WHEP Receive-Only Live View, and AWS Bedrock AgentCore Runtime*
+# DoorSignal friction log
 
----
+Observed during implementation on September 10, 2026. Severity describes the effect on this submission. Each workaround is implemented in this repository; provider behavior will be rechecked against live evidence before submission.
 
-## 1. Ring Partner API & Webhook Ingestion
+## Ring webhook contract was easy to misread
 
-### Friction Point 1: WHEP Receive-Only Audio Channel & Latency
-- **Observation**: Ring's WHEP (WebRTC HTTP Egress Protocol) partner stream delivers high quality video and incoming audio, but does not support upstream audio injection back to the hardware device. Early architectural thoughts of an "AI receptionist speaking through the Ring doorbell" proved infeasible under current partner specs.
-- **DoorSignal Resolution**: Re-architected the visitor interaction to use a zero-hardware, zero-install printable **DoorSignal QR Marker** placed near the Ring device, opening a lightweight PWA on the visitor's mobile phone. This solved the missing outbound audio channel cleanly while simultaneously boosting correlation certainty (+0.40 score when the visitor voluntary checks in).
-- **Recommendation for Ring**: An outbound audio datachannel over WebRTC would enable remote host voice greetings, but the current receive-only constraint is manageable when paired with mobile companion flows.
+- **Task:** Replace the prototype webhook receiver with the documented Ring contract.
+- **Steps:** Compared the existing handler with Ring's API reference, then implemented raw-body HMAC verification and tested official-shaped v1.1 fixtures, malformed signatures, duplicates, and an older incompatible envelope.
+- **Expected:** A TypeScript example or SDK helper that verifies a webhook and exposes the exact event union.
+- **Actual:** The application must preserve the original bytes, parse the `sha256=` header, perform constant-time comparison, and separately validate the v1.1 envelope. The old prototype had drifted to an invented timestamp-prefixed format.
+- **Severity:** Critical. A plausible implementation can reject every legitimate event or validate transformed JSON.
+- **Workaround:** `packages/core/src/ring.ts` verifies the exact bytes before parsing. `packages/core/src/types.ts` constrains the envelope and supported event types. Forty tests include malformed and legacy cases.
+- **Suggestion:** Publish a small official Node package with raw-body framework examples, constant-time verification, and versioned TypeScript event types.
 
-### Friction Point 2: HMAC-SHA256 Signature Header Parsing & Clock Skew
-- **Observation**: Ring webhook signatures are provided in the formatted header `X-Ring-Signature: t=1757464034,v1=9b7348...`. If developers attempt to sign only the raw body without prefixing the timestamp (`${timestamp}.${rawBody}`), verification silently fails. In addition, distributed Lambda cold starts can suffer from clock drift.
-- **DoorSignal Resolution**: Implemented a dedicated constant-time verification utility (`verifyRingWebhookSignature`) in `@doorsignal/ring-client` with a configurable 300-second drift buffer and strict `crypto.timingSafeEqual` comparison.
-- **Recommendation for Ring**: Provide official TypeScript SDK helpers for webhook verification in `@ring/developer-tools`.
+## Device details arrive through JSON:API relationships
 
-### Friction Point 3: Watermarking Container Constraints
-- **Observation**: Ring Partner API requires that video/snapshot streams served to external applications preserve the Ring logo, Device ID, Application ID, and timestamp watermark without cropping or tampering.
-- **DoorSignal Resolution**: Created a dedicated `RingWatermarkFrame` component in `@doorsignal/ui` that explicitly frames the video stream and renders complementary metadata bars above and below without obscuring the stream boundaries.
+- **Task:** Discover devices and determine their online state and capabilities.
+- **Steps:** Requested `/v1/devices?include=status,capabilities`, mapped relationship identifiers into `included`, and tested online, offline, missing, and malformed combinations.
+- **Expected:** A self-contained device record for the common status and capability fields.
+- **Actual:** Useful data may require joining relationships to included resources. An absent relationship is different from a false capability, and an unknown status must not be treated as online.
+- **Severity:** Important. Incorrect joins can enable a stream control for an offline or unrelated device.
+- **Workaround:** DoorSignal resolves relationship `type` and `id`, preserves `unknown`, associates devices with the connected account, and refreshes status before WHEP creation.
+- **Suggestion:** Add a complete response example with multiple devices, mixed online states, missing includes, and the capabilities needed for each media operation.
 
----
+## Playground credentials are deliberately short-lived
 
-## 2. AWS Bedrock AgentCore & Policy Engine
+- **Task:** Keep a live hackathon demo usable without representing an expired session as connected.
+- **Steps:** Connected the official playground path, added a local expiry boundary, and tested calls after expiry and provider 401/403 responses.
+- **Expected:** A stable development credential or machine-readable expiry supplied with the token.
+- **Actual:** Playground access is short-lived, so a rehearsal or recording can cross the expiry boundary.
+- **Severity:** Important for demos; low for security because short life reduces exposure.
+- **Workaround:** DoorSignal stores the token only in Secrets Manager, records a conservative expiry, fails closed, and shows **Reconnect** instead of stale success.
+- **Suggestion:** Return explicit `expires_at` metadata and add a refresh/reissue control in the playground without requiring the developer to reconstruct setup.
 
-### Friction Point 4: Single Bedrock Prompt vs Multi-Service Agent Pipeline
-- **Observation**: A single monolithic Bedrock prompt attempting to ingest camera descriptions, calendar databases, and notification formatting produces hallucinations and unpredictable tool calling.
-- **DoorSignal Resolution**: Implemented a 4-stage resolver:
-  - Stage 1: Deterministic filter (eliminating 90% of irrelevant scheduled records via window +/- 30m).
-  - Stage 2: Contextual heuristic scoring (transparent weights for token match, time proximity, site match).
-  - Stage 3: Strands agent on Bedrock AgentCore Runtime only for genuinely ambiguous multi-candidate events.
-  - Stage 4: AgentCore Policy engine enforcing hard negative constraints.
+## WHEP cleanup needs careful URL handling
 
-### Friction Point 5: Enforcing Negative Guardrails on Agent Actions
-- **Observation**: Standard LLM prompts like "Do not unlock doors" can be bypassed via indirect prompt injection or hallucinated parameters.
-- **DoorSignal Resolution**: Enforced AgentCore Policy checks outside the model execution loop: any tool call matching access or unlock keywords is unconditionally blocked at the gateway level with an auditable policy violation log.
+- **Task:** Start and reliably end a receive-only Ring live-view session.
+- **Steps:** Sent a receive-only SDP offer, checked the answer and `Location`, then exercised normal cleanup, malformed locations, wrong origins, and device-path mismatch in tests.
+- **Expected:** A typed session identifier that can be passed to an SDK cleanup method.
+- **Actual:** The cleanup target is a URL returned in a header. Blindly following it would risk forwarding authorization to an unexpected host.
+- **Severity:** Critical for credential protection and important for cleaning up provider sessions.
+- **Workaround:** DoorSignal accepts only the Ring API origin and the connected device's WHEP session path, strips the URL into a short-lived signed app token, and calls DELETE explicitly.
+- **Suggestion:** Return a structured session id and publish lifecycle examples for browser disconnect, timeout, and failed SDP negotiation.
+
+## AWS Budget custom dates use epoch seconds at deployment
+
+- **Task:** Create a US$50 gross-cost budget covering the hackathon deployment through November 20.
+- **Steps:** Defined a CDK `CfnBudget` with a custom time period and deployed through CloudFormation.
+- **Expected:** ISO 8601 strings accepted by the generated CDK type would deploy.
+- **Actual:** AWS Budgets rejected those values and required epoch seconds encoded for the resource provider. CloudFormation rolled the first stack attempt back.
+- **Severity:** Important. It blocked infrastructure deployment but created no application-data loss.
+- **Workaround:** DoorSignal uses the verified epoch boundaries `1788998400` and `1795219200`, keeps the calculation documented, and reruns synthesis before deployment.
+- **Suggestion:** Make CDK's generated type and documentation match the value shape enforced by the CloudFormation resource provider, or convert `Date` values during synthesis.
+
+## SES sandbox state is easy to confuse with application readiness
+
+- **Task:** Send host notifications and report their real state.
+- **Steps:** Queried the account, found sending enabled with production access disabled and a daily quota of 200, then implemented persisted queue/attempt/failure states.
+- **Expected:** A development environment that can send a bounded test to a configured recipient after domain verification.
+- **Actual:** While the account is in the SES sandbox, recipients also need verification. SES accepting a request still does not prove inbox delivery.
+- **Severity:** Important for live email evidence; the in-app workflow remains functional.
+- **Workaround:** The judge demo never sends external email. Live configuration accepts only an approved recipient, tracks SES acceptance as `sent`, and keeps delivery claims out of the UI.
+- **Suggestion:** Surface sandbox restrictions and identity readiness together in a single API response, including the exact next verification action.
