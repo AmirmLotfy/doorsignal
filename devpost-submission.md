@@ -61,7 +61,7 @@ https://doorsignal.site
 
 ## Public Repository Link
 
-https://github.com/AmirmLotfy/doorsignal — publication in progress
+https://github.com/AmirmLotfy/doorsignal
 
 ## Demo Video
 
@@ -82,7 +82,7 @@ Pending final public YouTube upload. The 2:45 script, caption plan, thumbnail, a
 
 - Public HTTPS homepage, health endpoint, deep links, static chunks, and `www` redirect are verified.
 - Forty unit tests, TypeScript checks, the production build, CDK synthesis, and secret scan pass.
-- The deployed guest story is verified across separate operator and visitor sessions.
+- The deployed guest story is verified across separate operator and visitor sessions. Hosted delivery, scheduled-service, and unmatched-arrival runs also completed successfully.
 - Devpost image: 1536 × 1024 PNG below 5 MB. YouTube master: 3840 × 2160 with a compressed upload copy.
 - Primary track: Ring. Mini challenges: AWS Builder and Open Source.
 - Final Devpost submission remains blocked until the participant supplies required identity, residence, project-history, and eligibility answers and explicitly says **yes, submit** after reviewing the finished preview.

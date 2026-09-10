@@ -24,8 +24,8 @@ MOBBIN-GATE: PASS for the approved dashboard refinement.
 - ACM issued the apex and `www` certificate. `https://doorsignal.site/api/health` returns `status: ok` with `storage: DynamoDB`; the homepage, `/today` deep link, JavaScript chunks, and the `www` redirect return successfully over HTTPS.
 - The stack contains DynamoDB and Streams, EventBridge, two worker Lambdas, an SQS dead-letter queue, Cognito, Secrets Manager, SES permissions, CloudWatch alarms, SNS notifications, and gross-spend AWS Budget alerts at USD 25 and USD 40.
 - SES DKIM is verified for `doorsignal.site`. The account remains in the SES sandbox, and no recipient is configured or contacted without the submitter's explicit approval.
-- The isolated deployed judge demo was exercised in separate browser sessions. A guest arrival was created, the visitor submitted the signed check-in form, the operator acknowledged it, and the visitor status changed to **They're on their way**.
-- The full verification suite passes 40 tests, TypeScript checking for all workspaces, the clean Next.js production build, CDK synthesis, and the repository secret scan.
+- The isolated deployed judge demo was exercised in separate browser sessions. A guest arrival was created, the visitor submitted the signed check-in form, the operator acknowledged it, and the visitor status changed to **They're on their way**. Separate hosted runs moved a delivery through received and collected, confirmed a scheduled service match, and preserved an unmatched arrival for human review.
+- The full verification suite passes 40 tests, TypeScript checking for all workspaces, the clean Next.js production build, CDK synthesis, and the repository secret scan. Public GitHub Actions run `34432401013` passed the same release checks on commit `015601e`.
 - The Devpost image is 1536 × 1024 and below 5 MB. The YouTube master is 3840 × 2160 with a compressed upload copy. Source prompts and rights notes are saved with the assets.
 
 ## Open evidence gates
@@ -33,7 +33,7 @@ MOBBIN-GATE: PASS for the approved dashboard refinement.
 - The official Ring playground login is awaiting the submitter's Amazon Developer authentication. Live device discovery, event history, WHEP, token-expiry recovery, and recorded evidence remain pending.
 - A deployed Bedrock invocation remains separate from the unit-tested adapter and must be recorded before the AWS integration claim is finalized.
 - SES acceptance and inbox delivery are intentionally unclaimed until a verified, explicitly approved recipient is tested.
-- Delivery and service/unmatched stories pass automated tests; their final hosted browser recording remains pending.
+- The final screen recording of the verified hosted stories remains pending.
 - Narration, music, captions, final video upload, participant details, eligibility attestations, and explicit final submission approval remain pending.
 
 ## Evidence levels

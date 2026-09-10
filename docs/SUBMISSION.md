@@ -65,7 +65,7 @@ TypeScript, Next.js, React, Ring API, Ring Developer Playground, WHEP, AWS CDK, 
 ## Links
 
 - Product: `https://doorsignal.site` — HTTPS, homepage, and deep links verified September 10, 2026
-- Source: `https://github.com/AmirmLotfy/doorsignal` — pending publication
+- Source: `https://github.com/AmirmLotfy/doorsignal` — public with Apache-2.0 detected
 - Testing: `https://doorsignal.site` — isolated public judge demo verified across separate operator and visitor sessions
 - Video: pending final upload
 - Friction log: public repository URL pending
@@ -79,7 +79,7 @@ TypeScript, Next.js, React, Ring API, Ring Developer Playground, WHEP, AWS CDK, 
 **Primary track:** Ring  
 **New or existing before August 31, 2026:** pending submitter confirmation  
 **AWS Builder Mini Challenge:** Yes  
-**Open Source Mini Challenge:** Yes, contingent on the repository being public during the submission window
+**Open Source Mini Challenge:** Yes
 
 ### AWS Builder explanation
 
@@ -87,8 +87,8 @@ DoorSignal uses DynamoDB and Streams for durable, deduplicated arrival records a
 
 ### Open Source explanation
 
-Contribution URL: `https://github.com/AmirmLotfy/doorsignal` — pending publication  
-Project repository: `https://github.com/AmirmLotfy/doorsignal` — pending publication  
+Contribution URL: `https://github.com/AmirmLotfy/doorsignal`  
+Project repository: `https://github.com/AmirmLotfy/doorsignal`  
 GitHub username: `AmirmLotfy`
 
 DoorSignal is a new Apache-2.0 project created during the hackathon window. The contribution includes the complete Next.js product, Ring server adapter, webhook verifier, QR visitor handoff, DynamoDB persistence layer, EventBridge/Lambda worker pipeline, bounded Nova integration, SES notification state machine, CDK infrastructure, original brand assets, tests, setup instructions, and evidence-based friction notes. It matters because it turns a low-context sensor notification into an accountable workflow without biometric identification.
