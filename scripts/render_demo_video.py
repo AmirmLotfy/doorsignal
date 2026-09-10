@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import math
+import os
+import shutil
 import subprocess
 import textwrap
 from pathlib import Path
@@ -14,6 +16,7 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parents[1]
 VIDEO = ROOT / "artifacts" / "video"
 CAPTURES = VIDEO / "captures"
+CLEAN_CAPTURES = VIDEO / "captures-clean"
 AUDIO = VIDEO / "audio"
 RENDER = VIDEO / "render"
 SUBMISSION = ROOT / "assets" / "submission"
@@ -84,6 +87,54 @@ def make_architecture_card(path: Path) -> None:
         draw.text((x + 34, 785), detail, font=small, fill="#aeb8af")
 
     draw.text((120, 970), "DOORSIGNAL.SITE", font=label, fill="#f7f4ec")
+    image.save(path, optimize=True)
+
+
+def paste_logo(image: Image.Image, xy: tuple[int, int], size: int) -> None:
+    logo = Image.open(ROOT / "assets" / "brand" / "doorsignal-icon-master.png").convert("RGBA")
+    logo.thumbnail((size, size), Image.Resampling.LANCZOS)
+    image.paste(logo, xy, logo)
+
+
+def make_hackathon_card(path: Path) -> None:
+    image = Image.new("RGB", (WIDTH, HEIGHT), "#101512")
+    draw = ImageDraw.Draw(image)
+    eyebrow = ImageFont.truetype(FONT_REGULAR, 30)
+    title = ImageFont.truetype(FONT_CONDENSED, 116)
+    body = ImageFont.truetype(FONT_REGULAR, 32)
+    badge = ImageFont.truetype(FONT_CONDENSED, 39)
+    draw.rounded_rectangle((118, 122, 302, 306), radius=24, fill="#f6f4ed")
+    paste_logo(image, (132, 136), 156)
+    draw.text((340, 145), "BUILT FOR", font=eyebrow, fill="#aeb8af")
+    draw.text((340, 190), "BUILD, SHIP, SHAPE", font=title, fill="#f7f4ec")
+    draw.text((344, 322), "Amazon Developer Hackathon 2026", font=body, fill="#aeb8af")
+    draw.line((130, 505, 1760, 505), fill="#54665a", width=2)
+    badges = [(130, "RING TRACK"), (610, "AWS BUILDER"), (1090, "OPEN SOURCE")]
+    for x, copy in badges:
+        draw.rounded_rectangle((x, 600, x + 380, 720), radius=18, fill="#18211d", outline="#54665a", width=2)
+        dot = "#4ca7ff" if copy == "RING TRACK" else "#f25a3c"
+        draw.ellipse((x + 28, 648, x + 48, 668), fill=dot)
+        draw.text((x + 72, 629), copy, font=badge, fill="#f7f4ec")
+    draw.text((130, 874), "One front door. Three accountable workflows.", font=body, fill="#aeb8af")
+    image.save(path, optimize=True)
+
+
+def make_cta_card(path: Path) -> None:
+    image = Image.new("RGB", (WIDTH, HEIGHT), "#f6f4ed")
+    draw = ImageDraw.Draw(image)
+    brand = ImageFont.truetype(FONT_CONDENSED, 108)
+    title = ImageFont.truetype(FONT_CONDENSED, 92)
+    body = ImageFont.truetype(FONT_REGULAR, 32)
+    mono = ImageFont.truetype(FONT_CONDENSED, 52)
+    paste_logo(image, (126, 130), 180)
+    draw.text((340, 150), "DoorSignal.", font=brand, fill="#15201b")
+    draw.text((130, 410), "TRY THE LIVE JUDGE DEMO", font=title, fill="#15201b")
+    draw.rounded_rectangle((130, 545, 1790, 680), radius=22, fill="#15201b")
+    draw.text((184, 572), "DOORSIGNAL.SITE", font=mono, fill="#f7f4ec")
+    draw.ellipse((1680, 591, 1724, 635), fill="#f25a3c")
+    draw.text((130, 760), "Open source · github.com/AmirmLotfy/doorsignal", font=body, fill="#4f5a53")
+    draw.text((130, 842), "RING + AWS · NO FACIAL RECOGNITION", font=body, fill="#4f5a53")
+    draw.text((130, 954), "FROM DOORBELL TO DONE.", font=mono, fill="#f25a3c")
     image.save(path, optimize=True)
 
 
@@ -184,16 +235,19 @@ def make_caption_cards(cues: list[tuple[float, float, str]]) -> list[Path]:
     return cards
 
 
-def render_standard(source: Path, target: Path, source_start: float, source_end: float, duration: float) -> None:
+def render_standard(source: Path, target: Path, source_start: float, source_end: float, duration: float, fade: bool = False) -> None:
     speed = duration / (source_end - source_start)
     fade_out = max(0, duration - 0.18)
+    fade_filter = (
+        f",fade=t=in:st=0:d=0.16,fade=t=out:st={fade_out}:d=0.18" if fade else ""
+    )
     vf = (
         f"trim=start={source_start}:end={source_end},setpts={speed}*(PTS-STARTPTS),"
         f"fps={FPS},scale={WIDTH}:{HEIGHT}:force_original_aspect_ratio=decrease,"
-        f"pad={WIDTH}:{HEIGHT}:(ow-iw)/2:(oh-ih)/2:color=#101512,"
-        f"fade=t=in:st=0:d=0.16,fade=t=out:st={fade_out}:d=0.18,format=yuv420p"
+        f"pad={WIDTH}:{HEIGHT}:(ow-iw)/2:(oh-ih)/2:color=#101512"
+        f"{fade_filter},tpad=stop_mode=clone:stop_duration=0.2,format=yuv420p"
     )
-    run("-i", str(source), "-an", "-vf", vf, "-t", str(duration), "-c:v", "libx264", "-preset", "medium", "-crf", "18", str(target))
+    run("-i", str(source), "-an", "-vf", vf, "-frames:v", str(round(duration * FPS)), "-c:v", "libx264", "-preset", "medium", "-crf", "18", str(target))
 
 
 def render_mobile(source: Path, target: Path, source_start: float, source_end: float, duration: float, kicker: str) -> None:
@@ -206,62 +260,88 @@ def render_mobile(source: Path, target: Path, source_start: float, source_end: f
         f"fps={FPS},scale=-2:940[phone];"
         f"[bg][phone]overlay=x=1240:y=70:shortest=1[composite];"
         "[composite]fade=t=in:st=0:d=0.16,"
-        f"fade=t=out:st={max(0, duration - 0.18)}:d=0.18,format=yuv420p[out]"
+        f"fade=t=out:st={max(0, duration - 0.18)}:d=0.18,"
+        "tpad=stop_mode=clone:stop_duration=0.2,format=yuv420p[out]"
     )
-    run("-loop", "1", "-i", str(card), "-i", str(source), "-filter_complex", filter_complex, "-map", "[out]", "-an", "-t", str(duration), "-c:v", "libx264", "-preset", "medium", "-crf", "18", str(target))
+    run("-loop", "1", "-i", str(card), "-i", str(source), "-filter_complex", filter_complex, "-map", "[out]", "-an", "-frames:v", str(round(duration * FPS)), "-c:v", "libx264", "-preset", "medium", "-crf", "18", str(target))
 
 
 def render_captioned(clean: Path, captioned: Path, cues: list[tuple[float, float, str]]) -> None:
     cards = make_caption_cards(cues)
-    args = ["-i", str(clean)]
-    for card in cards:
-        args.extend(["-loop", "1", "-i", str(card)])
-    filters = ["[0:v]setpts=PTS-STARTPTS[v0]"]
-    current = "v0"
-    for index, (start, end, _) in enumerate(cues, 1):
-        next_name = f"v{index}"
-        filters.append(
-            f"[{current}][{index}:v]overlay=x=200:y=860:enable='between(t,{start:.3f},{end:.3f})'[{next_name}]"
-        )
-        current = next_name
-    args.extend([
-        "-filter_complex", ";".join(filters), "-map", f"[{current}]", "-map", "0:a:0",
-        "-t", str(TOTAL_SECONDS), "-c:v", "libx264", "-preset", "slow", "-crf", "18",
+    frames_dir = RENDER / "caption-strip-frames"
+    shutil.rmtree(frames_dir, ignore_errors=True)
+    frames_dir.mkdir(parents=True)
+    blank = RENDER / "caption-blank.png"
+    Image.new("RGBA", (1520, 176), (0, 0, 0, 0)).save(blank)
+
+    total_frames = round(TOTAL_SECONDS * FPS)
+    for frame_number in range(total_frames):
+        timestamp = (frame_number + 0.5) / FPS
+        source = blank
+        for cue_index, (start, end, _) in enumerate(cues):
+            if start <= timestamp <= end:
+                source = cards[cue_index]
+                break
+        os.link(source, frames_dir / f"frame-{frame_number:05d}.png")
+
+    caption_track = RENDER / "caption-track.mov"
+    run(
+        "-framerate", str(FPS), "-start_number", "0",
+        "-i", str(frames_dir / "frame-%05d.png"),
+        "-frames:v", str(total_frames), "-c:v", "qtrle", "-pix_fmt", "argb",
+        str(caption_track),
+    )
+    run(
+        "-i", str(clean), "-i", str(caption_track),
+        "-filter_complex", "[0:v][1:v]overlay=x=200:y=860:shortest=1,format=yuv420p[out]",
+        "-map", "[out]", "-map", "0:a:0", "-frames:v", str(total_frames),
+        "-r", str(FPS), "-fps_mode", "cfr", "-c:v", "libx264", "-preset", "medium", "-crf", "18",
         "-c:a", "copy", "-movflags", "+faststart", str(captioned),
-    ])
-    run(*args)
+    )
 
 
-def render_still(source: Path, target: Path, duration: float, reverse: bool = False) -> None:
+def render_still(source: Path, target: Path, duration: float, reverse: bool = False, fade: bool = True) -> None:
     frames = math.ceil(duration * FPS)
     zoom = "if(lte(zoom,1.0),1.0,max(1.0,zoom-0.00035))" if reverse else "min(zoom+0.00035,1.06)"
+    fade_filter = (
+        f",fade=t=in:st=0:d=0.35,fade=t=out:st={max(0, duration - 0.45)}:d=0.45"
+        if fade else ""
+    )
     vf = (
         f"scale=4000:-2,zoompan=z='{zoom}':x='iw/2-(iw/zoom/2)':"
         f"y='ih/2-(ih/zoom/2)':d={frames}:s={WIDTH}x{HEIGHT}:fps={FPS},"
-        f"fade=t=in:st=0:d=0.35,fade=t=out:st={max(0, duration - 0.45)}:d=0.45,format=yuv420p"
+        f"setpts=PTS-STARTPTS{fade_filter},format=yuv420p"
     )
-    run("-loop", "1", "-i", str(source), "-an", "-vf", vf, "-t", str(duration), "-c:v", "libx264", "-preset", "medium", "-crf", "18", str(target))
+    run("-loop", "1", "-i", str(source), "-an", "-vf", vf, "-frames:v", str(frames), "-c:v", "libx264", "-preset", "medium", "-crf", "18", str(target))
 
 
 def main() -> None:
     RENDER.mkdir(parents=True, exist_ok=True)
     architecture = RENDER / "architecture.png"
+    hackathon = RENDER / "hackathon.png"
+    cta = RENDER / "cta.png"
     captions = RENDER / "doorsignal-demo-en.srt"
     make_architecture_card(architecture)
+    make_hackathon_card(hackathon)
+    make_cta_card(cta)
     cues = make_captions(captions)
 
-    segments = [RENDER / f"segment-{index:02d}.mp4" for index in range(1, 12)]
-    render_still(SUBMISSION / "doorsignal-youtube-upload-3840x2160.jpg", segments[0], 5.0)
-    render_standard(CAPTURES / "01-opening.webm", segments[1], 0, 15.6, 8.0)
-    render_standard(CAPTURES / "02-guest-operator.webm", segments[2], 0, 20, 12.0)
-    render_mobile(CAPTURES / "03-guest-visitor.webm", segments[3], 0, 18, 12.0, "A GOOD WELCOME STARTS HERE")
-    render_standard(CAPTURES / "02-guest-operator.webm", segments[4], 20, 39, 11.0)
-    render_mobile(CAPTURES / "03-guest-visitor.webm", segments[5], 18, 30, 6.0, "THEY'RE ON THEIR WAY")
-    render_standard(CAPTURES / "04-delivery.webm", segments[6], 4.5, 28.6, 28.6)
-    render_standard(CAPTURES / "05-service-unmatched.webm", segments[7], 4.5, 30.84, 30.84)
-    render_standard(CAPTURES / "06-integrations.webm", segments[8], 4.5, 23.84, 23.84)
-    render_still(architecture, segments[9], 15.0)
-    render_still(SUBMISSION / "doorsignal-youtube-upload-3840x2160.jpg", segments[10], 12.72, reverse=True)
+    segments = [RENDER / f"segment-{index:02d}.mp4" for index in range(1, 13)]
+    operator = CLEAN_CAPTURES / "operator-continuous.webm"
+    visitor = CLEAN_CAPTURES / "visitor-continuous.webm"
+    render_still(SUBMISSION / "doorsignal-youtube-upload-3840x2160.jpg", segments[0], 6.0)
+    render_still(hackathon, segments[1], 7.0)
+    render_standard(operator, segments[2], 24.255, 35.3, 10.0)
+    render_mobile(visitor, segments[3], 5.75, 15.0, 12.0, "A GOOD WELCOME STARTS HERE")
+    render_standard(operator, segments[4], 57.174, 62.0, 8.0)
+    render_mobile(visitor, segments[5], 30.597, 36.0, 6.0, "THEY'RE ON THEIR WAY")
+    render_standard(operator, segments[6], 62.0, 69.429, 5.5)
+    render_standard(operator, segments[7], 69.429, 84.9, 31.5)
+    render_standard(operator, segments[8], 84.9, 97.518, 32.0)
+    render_standard(operator, segments[9], 97.518, 102.6, 12.0)
+    render_still(architecture, segments[10], 20.0)
+    # Hold the final CTA at full brightness through the last frame.
+    render_still(cta, segments[11], 15.0, reverse=True, fade=False)
 
     concat_file = RENDER / "segments.txt"
     concat_file.write_text("\n".join(f"file '{segment.name}'" for segment in segments) + "\n", encoding="utf-8")

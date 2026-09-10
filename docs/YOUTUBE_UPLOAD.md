@@ -26,11 +26,13 @@ Built for the Ring primary track and AWS Builder and Open Source mini challenges
 
 ```text
 00:00 From doorbell to done
+00:06 Built for Amazon Developer Hackathon 2026
 00:13 Guest arrival and voluntary check-in
 00:54 Delivery lifecycle
 01:26 Scheduled service and human review
-01:58 Ring and AWS integration
-02:32 Closing
+01:58 Ring integration status
+02:10 Durable AWS architecture
+02:30 Try the live judge demo
 ```
 
 ## Upload files
