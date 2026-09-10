@@ -4,7 +4,7 @@
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,7 +24,31 @@ def perspective_coefficients(destination, source):
     return np.linalg.solve(np.asarray(matrix, dtype=float), np.asarray(values, dtype=float))
 
 
-def replace_product_plane(key_art: Path, destination, output_size, png_path: Path, jpg_path: Path | None = None):
+def add_youtube_headline(canvas: Image.Image) -> None:
+    """Typeset the campaign line exactly; generated imagery must not render copy."""
+    draw = ImageDraw.Draw(canvas)
+    font = ImageFont.truetype(
+        "/System/Library/Fonts/Supplemental/DIN Condensed Bold.ttf", 108
+    )
+    x = 382
+    lines = [
+        ("FROM", 205, (248, 247, 242, 255)),
+        ("DOORBELL", 302, (248, 247, 242, 255)),
+        ("TO DONE.", 399, (242, 85, 54, 255)),
+    ]
+    for copy, y, color in lines:
+        draw.text((x + 3, y + 5), copy, font=font, fill=(0, 0, 0, 125))
+        draw.text((x, y), copy, font=font, fill=color)
+
+
+def replace_product_plane(
+    key_art: Path,
+    destination,
+    output_size,
+    png_path: Path,
+    jpg_path: Path | None = None,
+    add_headline: bool = False,
+):
     canvas = Image.open(key_art).convert("RGBA")
     screenshot = Image.open(SOURCE / "dashboard-desktop-1600x1000.png").convert("RGBA")
     sw, sh = screenshot.size
@@ -40,6 +64,9 @@ def replace_product_plane(key_art: Path, destination, output_size, png_path: Pat
     mask = Image.new("L", canvas.size, 0)
     ImageDraw.Draw(mask).polygon(destination, fill=255)
     canvas.alpha_composite(Image.composite(warped, Image.new("RGBA", canvas.size), mask))
+
+    if add_headline:
+        add_youtube_headline(canvas)
 
     final = canvas.convert("RGB").resize(output_size, Image.Resampling.LANCZOS)
     final.save(png_path, optimize=True)
@@ -60,4 +87,5 @@ replace_product_plane(
     (3840, 2160),
     OUT / "doorsignal-youtube-master-3840x2160.png",
     OUT / "doorsignal-youtube-upload-3840x2160.jpg",
+    add_headline=True,
 )

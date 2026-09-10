@@ -11,13 +11,13 @@ The final graphics combine generated campaign key art with a real 1600 × 1000 c
 
 Run `scripts/compose_submission_images.py` with the bundled workspace Python runtime to reproduce the final layouts.
 
-These project-owned images were produced with OpenAI's internal image-generation model on September 10, 2026. The model created the two campaign scenes, including an original depiction of a modern Ring-style video doorbell; no third-party product photograph or stock asset was used. The final interface planes are composited from a direct capture of the deployed judge demo at `https://doorsignal.site/today`.
+These project-owned images were produced with OpenAI's internal image-generation model on September 10, 2026. The model created the two campaign scenes, including an original depiction of a modern Ring-style video doorbell; no third-party product photograph or stock asset was used. The final interface planes are composited from a direct capture of the deployed judge demo at `https://doorsignal.site/today`. The YouTube source was then edited to remove generated headline lettering, and the exact campaign line was typeset by the composition script.
 
 ## Deliverables
 
-- `doorsignal-devpost-1536x1024.png`: 1536 × 1024, 3:2, about 0.92 MB.
+- `doorsignal-devpost-1536x1024.png`: 1536 × 1024, 3:2, about 1.2 MB.
 - `doorsignal-youtube-master-3840x2160.png`: exact 3840 × 2160 master.
-- `doorsignal-youtube-upload-3840x2160.jpg`: exact 3840 × 2160 upload copy, progressive JPEG, about 0.89 MB.
+- `doorsignal-youtube-upload-3840x2160.jpg`: exact 3840 × 2160 upload copy, progressive JPEG, about 0.73 MB.
 
 ## Devpost prompt
 
@@ -27,4 +27,4 @@ These project-owned images were produced with OpenAI's internal image-generation
 
 > Create a striking 16:9 technology-campaign thumbnail showing a macro Ring-style doorbell press becoming an owned DoorSignal arrival. Use one blue-to-terracotta signal path, an oversized condensed headline, and the deployed dashboard filling the right half. Exact copy: `DoorSignal`, `FROM DOORBELL`, `TO DONE.`, `RING + AWS`. Keep the hardware plausible and the interface dominant. No laptop, phone, fake panels, reaction face, purple gradient, generic template, or random text.
 
-The final layouts are reproduced by `scripts/compose_submission_images.py`. It places the exact DoorSignal logo, typed copy, and real 1600 × 1000 browser capture over the generated backgrounds, then exports the requested dimensions. Source generations remain in `assets/submission/source/` and the Codex generated-image store.
+The final layouts are reproduced by `scripts/compose_submission_images.py`. It places the real 1600 × 1000 browser capture over the generated backgrounds, renders the YouTube headline with deterministic typography, and exports the requested dimensions. Source generations remain in `assets/submission/source/` and the Codex generated-image store.
