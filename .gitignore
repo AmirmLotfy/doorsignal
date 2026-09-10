@@ -23,6 +23,7 @@ artifacts/private/
 artifacts/deploy/
 artifacts/evidence/
 artifacts/video/
+artifacts/judge-kit/*.zip
 assets/submission/*-v2.*
 *.pem
 *.key

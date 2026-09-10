@@ -1,5 +1,7 @@
 # YouTube upload package
 
+Published video: `https://youtu.be/bX1VeK-_rTo`
+
 ## Title
 
 DoorSignal — From doorbell to done. | Ring + AWS Hackathon Demo
@@ -50,5 +52,5 @@ DoorSignal, Ring API, Amazon Ring, AWS, Amazon Bedrock, Amazon Nova, DynamoDB, L
 - Language: English
 - Audience: not made for kids
 - License: Standard YouTube License for the video; project source remains Apache-2.0
-- Visibility for judging: Public or Unlisted, as accepted by Devpost
+- Visibility for judging: Public
 - Upload captions as English even when the captioned master is used, so the transcript remains searchable and accessible

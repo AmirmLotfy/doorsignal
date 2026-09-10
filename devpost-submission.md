@@ -85,20 +85,17 @@ Pending final public YouTube upload. The 2:45 script, caption plan, thumbnail, a
 - The deployed guest story is verified across separate operator and visitor sessions. Hosted delivery, scheduled-service, and unmatched-arrival runs also completed successfully.
 - Devpost image: 1536 × 1024 PNG below 5 MB. YouTube master: 3840 × 2160 with a compressed upload copy.
 - Primary track: Ring. Mini challenges: AWS Builder and Open Source.
-- Final Devpost submission remains blocked until the participant supplies required identity, residence, project-history, and eligibility answers and explicitly says **yes, submit** after reviewing the finished preview.
+- Participant answers are confirmed: Individual; N/A organization; Egypt; N/A Canadian province; new project; all three eligibility attestations accepted. The submitter explicitly authorized publication and submission on September 10, 2026.
 
 ## Known Limitations
 
 - Official Ring playground evidence awaits Amazon Developer login; playground credentials expire quickly.
 - SES DKIM is verified, but the account remains in sandbox and no recipient has been approved for a delivery test.
 - CloudFront distribution creation is unavailable in the current AWS account, so the active deployment serves static assets from the Lambda package through API Gateway.
-- The final public video, captions, narration, music, and upload are pending.
+- The final public video is live at `https://youtu.be/bX1VeK-_rTo` with English open captions, an uploaded English subtitle track, the custom thumbnail, and clean YouTube copyright and Community Guidelines checks.
 
 ## TODO Official Form Fields
 
-- Submitter type, organization name, country of residence, and Canadian province if applicable.
-- Whether the project existed before August 31, 2026, plus the required explanation if applicable.
-- The three age, jurisdiction, and employment eligibility attestations.
 - Final Ring playground and Bedrock evidence wording.
-- Final public video URL and uploaded gallery.
+- Uploaded gallery and judge kit.
 - Codex session ID: `01a08839-a1f9-7f92-b4b4-6a2134861fbb`.

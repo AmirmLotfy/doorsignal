@@ -1,6 +1,6 @@
 # Devpost submission copy
 
-Draft for project `doorsignal` (Devpost project 1423199). Links and provider evidence marked pending must be replaced with verified public values before updating the draft. Eligibility statements remain unanswered until the submitter confirms them.
+Prepared for project `doorsignal` (Devpost submission 1177011). Provider evidence limits remain explicit. The submitter supplied the required participant and eligibility answers on September 10, 2026.
 
 ## General information
 
@@ -67,18 +67,25 @@ TypeScript, Next.js, React, Ring API, Ring Developer Playground, WHEP, AWS CDK, 
 - Product: `https://doorsignal.site` — HTTPS, homepage, and deep links verified September 10, 2026
 - Source: `https://github.com/AmirmLotfy/doorsignal` — public with Apache-2.0 detected
 - Testing: `https://doorsignal.site` — isolated public judge demo verified across separate operator and visitor sessions
-- Video: pending final upload
-- Friction log: public repository URL pending
+- Video: `https://youtu.be/bX1VeK-_rTo` — public, 2:45, English captions, custom thumbnail, and YouTube checks complete
+- Friction log: `https://github.com/AmirmLotfy/doorsignal/blob/main/docs/friction-log.md`
 
 ## Additional information
 
-**Submitter type:** pending submitter answer  
-**Organization:** pending; use `N/A` only if the submitter confirms  
-**Country of residence:** pending submitter answer  
-**Canadian province:** pending submitter answer  
-**Primary track:** Ring  
-**New or existing before August 31, 2026:** pending submitter confirmation  
-**AWS Builder Mini Challenge:** Yes  
+**Submitter type:** Individual
+
+**Organization:** N/A
+
+**Country of residence:** Egypt
+
+**Canadian province:** N/A
+
+**Primary track:** Ring
+
+**New or existing before August 31, 2026:** New
+
+**AWS Builder Mini Challenge:** Yes
+
 **Open Source Mini Challenge:** Yes
 
 ### AWS Builder explanation
@@ -109,5 +116,5 @@ The full [friction log](friction-log.md) and five [developer-tool feedback answe
 - Official Ring calls and deployed Bedrock invocation recorded
 - Final video under three minutes, captions, gallery, thumbnails, and rights record reviewed
 - Judge kit under 35 MB reviewed
-- Submitter type, organization, residence, project history, and all three eligibility attestations answered by the submitter
-- Explicit **yes, submit** received after the Devpost preview is reviewable
+- Submitter type, organization, residence, project history, and all three eligibility attestations answered by the submitter on September 10, 2026
+- Explicit **submit** authorization received on September 10, 2026

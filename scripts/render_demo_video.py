@@ -140,11 +140,11 @@ def make_cta_card(path: Path) -> None:
 
 def make_captions(path: Path) -> list[tuple[float, float, str]]:
     chapters = [
-        (0.6, 10.24, [
+        (0.855, 7.174, [
             "Built for the Amazon Developer Hackathon, DoorSignal turns Ring events into accountable arrivals,",
             "with clear ownership from doorbell to done.",
         ]),
-        (13.5, 31.2, [
+        (13.958, 31.372, [
             "Here is a guest arriving.",
             "DoorSignal records the event as a case and keeps the schedule match tentative.",
             "The sign opens a check-in page on the guest's own phone—no app and no camera permission.",
@@ -154,21 +154,21 @@ def make_captions(path: Path) -> list[tuple[float, float, str]]:
             "A moment later, the guest's page says the host is on the way.",
             "Every step is saved, and no facial recognition is used.",
         ]),
-        (54.758, 21.582, [
+        (54.855, 22.659, [
             "Deliveries use the same calm handoff.",
             "A due package appears with its owner and current state.",
             "Operations marks it received, moving it to awaiting collection.",
             "When a teammate picks it up, one more action closes the case.",
             "The timeline records who changed the state, and repeated actions cannot overwrite the latest result.",
         ]),
-        (86.0, 21.84, [
+        (86.487, 26.428, [
             "A scheduled service visit can be suggested from its time window and location.",
             "DoorSignal still asks a person to confirm.",
             "After hours, the same door event with no matching appointment becomes an unmatched arrival.",
             "It does not invent an identity or a threat score.",
             "It states what is known, marks the case for human review, and exposes only application-approved actions.",
         ]),
-        (118.0, 37.36, [
+        (118.324, 37.959, [
             "This is the live path.",
             "DoorSignal calls Ring's server-side API for device discovery, event history, and receive-only WHEP sessions.",
             "Signed webhook bytes are persisted before the response.",

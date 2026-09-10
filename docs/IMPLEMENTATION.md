@@ -33,8 +33,8 @@ MOBBIN-GATE: PASS for the approved dashboard refinement.
 - The official Ring playground login is awaiting the submitter's Amazon Developer authentication. Live device discovery, event history, WHEP, token-expiry recovery, and recorded evidence remain pending.
 - Both the active geo inference profile `us.amazon.nova-2-lite-v1:0` and supported in-region id `amazon.nova-2-lite-v1:0` return `ValidationException: Operation not allowed` for this AWS account. DoorSignal converts that provider failure to `unknown` as designed. A successful deployed Bedrock invocation remains an external account-support gate.
 - SES acceptance and inbox delivery are intentionally unclaimed until a verified, explicitly approved recipient is tested.
-- The final screen recording of the verified hosted stories remains pending.
-- Narration, music, captions, final video upload, participant details, eligibility attestations, and explicit final submission approval remain pending.
+- The final 2:45 screen recording of the verified hosted stories is public at `https://youtu.be/bX1VeK-_rTo` with open and uploaded English captions.
+- Narration, music, captions, thumbnail, participant details, eligibility attestations, and explicit submission authorization are complete.
 
 ## Evidence levels
 

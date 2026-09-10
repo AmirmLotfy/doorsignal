@@ -1,6 +1,6 @@
 # DoorSignal demo script
 
-Final runtime: **2 minutes 45 seconds**. Language: English. Narration: Higgsfield Text to Speech 2.0 using the Reid male preset and ElevenLabs engine. Product footage is a real browser recording of the deployed judge demo. The official Ring playground insert remains pending Amazon Developer sign-in.
+Final runtime: **2 minutes 45 seconds**. Language: English. Narration: Higgsfield Seed Audio 1.0 using the Kevin male preset and a warm, grounded delivery. Product footage is a real browser recording of the deployed judge demo. The official Ring playground insert remains pending Amazon Developer sign-in.
 
 ## 0:00–0:10 — The problem and product
 

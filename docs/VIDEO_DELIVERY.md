@@ -13,15 +13,15 @@ The media outputs are intentionally ignored by Git because they are delivery art
 
 ## Production record
 
-- Narrator: Higgsfield Text to Speech 2.0, ElevenLabs engine, Reid male preset (`66469f5a-10db-586a-bab1-72f6ee66ba69`).
+- Narrator: Higgsfield Seed Audio 1.0, Kevin male preset (`f1373f24-3b96-433f-9a68-e595810ef608`), using the warm, grounded continuous-read approach proven in STAY.
 - Music: original Higgsfield Sonilo Music generation, instrumental only.
 - Product capture: `https://doorsignal.site`, isolated fictional judge sessions, 1920 × 1080 desktop and 430 × 932 visitor view.
-- Mix: measured −15.6 LUFS integrated and −1.27 dBTP after AAC encoding, with narration over an 11% instrumental bed.
+- Mix: measured −14.30 LUFS integrated and −1.18 dBTP after AAC encoding, with narration over an 11% instrumental bed.
 - Captions: sentence-timed sidecar plus deterministic open-caption cards.
 - Edit: one prepared operator session and one visitor session; loading and reload intervals are excluded from the timeline.
 - Validation: full-file decode succeeds; duration 165.000 seconds; exactly 4,950 video frames; H.264/AAC; 1920 × 1080; constant 30 fps; 48 kHz stereo.
 - Timing QC: AWS architecture remains visible at 02:25; the CTA begins at 02:30; the 02:44.8 frame remains bright and branded.
-- Narration QC: final speech windows are 10.240s, 31.200s, 21.582s, 21.840s, and 37.360s. No time stretching is applied.
+- Narration QC: final file durations are 8.283s, 32.094s, 23.200s, 28.600s, and 39.780s; detected speech ends at 8.029s, 31.830s, 23.014s, 26.915s, and 38.283s. No time stretching is applied.
 
 ## Provider-evidence gate
 
@@ -32,7 +32,7 @@ Amazon Bedrock returned `ValidationException: Operation not allowed` for Nova 2 
 ## Checksums
 
 ```text
-a063efef7228ec8665e9548caf8050ef1b79d2e02d3e100d738f305bab36d91a  doorsignal-demo-1080p.mp4
-7a0678fb9cd6523efad24639d235bc0d70d1ee9feb6b91cba6c0da729cf2cf74  doorsignal-demo-1080p-captioned.mp4
-2c9a5b2febd3066c9c2dc5b42e64a9e6aa899886f0f199fb1a4ded0c09f70b04  doorsignal-demo-en.srt
+369695fd4b275b7b85161d2cc11a5da269b78bafe4745e90a708acaf4c7ff00e  doorsignal-demo-1080p.mp4
+753016c912a901ced7815266f7d9640ee61378a0886a535edf30b9fb650a12a2  doorsignal-demo-1080p-captioned.mp4
+a364b4ed75b392ba6c29b25535a49bcba5f33870a1a49b4f238cea903ba8cbc3  doorsignal-demo-en.srt
 ```
