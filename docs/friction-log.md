@@ -61,3 +61,13 @@ Observed during implementation on September 10, 2026. Severity describes the eff
 - **Severity:** Important for live email evidence; the in-app workflow remains functional.
 - **Workaround:** The judge demo never sends external email. Live configuration accepts only an approved recipient, tracks SES acceptance as `sent`, and keeps delivery claims out of the UI.
 - **Suggestion:** Surface sandbox restrictions and identity readiness together in a single API response, including the exact next verification action.
+
+## An active Nova profile can still be blocked at the account boundary
+
+- **Task:** Record a real Nova 2 Lite Converse invocation through the same bounded scene-analysis path used by DoorSignal.
+- **Steps:** Verified AWS CLI `2.36.29`, authenticated the target account, confirmed both `us.amazon.nova-2-lite-v1:0` and `global.amazon.nova-2-lite-v1:0` inference profiles were `ACTIVE`, then invoked the geo profile and supported in-region model with explicit 64-token limits.
+- **Expected:** A small JSON response and usage metadata from the active model.
+- **Actual:** Both supported model identifiers returned `ValidationException: Operation not allowed`. The application path consumed its bounded attempt, stored no false completion record, and returned `unknown`.
+- **Severity:** Important for the optional scene-context enhancement and live video evidence. Core Ring, QR, ownership, persistence, and notification workflows continue without model output.
+- **Workaround:** DoorSignal treats all Bedrock refusal, validation, timeout, and malformed-output paths as `unknown`; it does not infer a detection or authorize an action. The repository records the provider gate separately from local adapter tests.
+- **Suggestion:** Return a reason code that distinguishes an account restriction from IAM, model access, cross-region routing, and quota errors, and surface the required support action in the Bedrock console.
