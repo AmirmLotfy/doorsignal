@@ -80,6 +80,8 @@ Pending final public YouTube upload. The 2:45 script, caption plan, thumbnail, a
 
 ## Submission Readiness Notes
 
+- Devpost confirmed **Project submitted!** on September 10, 2026. Public submission: `https://devpost.com/software/doorsignal`.
+
 - Public HTTPS homepage, health endpoint, deep links, static chunks, and `www` redirect are verified.
 - Forty unit tests, TypeScript checks, the production build, CDK synthesis, and secret scan pass.
 - The deployed guest story is verified across separate operator and visitor sessions. Hosted delivery, scheduled-service, and unmatched-arrival runs also completed successfully.

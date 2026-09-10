@@ -1,6 +1,6 @@
-# Devpost submission copy
+# Devpost submission record
 
-Prepared for project `doorsignal` (Devpost submission 1177011). Provider evidence limits remain explicit. The submitter supplied the required participant and eligibility answers on September 10, 2026.
+Submitted to Build, Ship, Shape: Amazon Developer Hackathon on September 10, 2026 for project `doorsignal` (Devpost submission 1177011). Public page: `https://devpost.com/software/doorsignal`. Provider evidence limits remain explicit.
 
 ## General information
 

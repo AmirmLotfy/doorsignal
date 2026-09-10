@@ -8,12 +8,17 @@
   "completed_stages": [
     "start-hackathon",
     "review-hackathon-rules",
-    "resources"
+    "resources",
+    "prepare-submission",
+    "submit-project"
   ],
-  "current_stage": "prepare-submission",
-  "next_command": "prepare-submission",
+  "current_stage": "submitted",
+  "next_command": "review-submission",
   "submission": {
-    "status": "drafting",
+    "status": "submitted",
+    "submitted_at": "2026-09-10",
+    "public_url": "https://devpost.com/software/doorsignal",
+    "video_url": "https://youtu.be/bX1VeK-_rTo",
     "draft_file": "devpost-submission.md"
   },
   "project": {
