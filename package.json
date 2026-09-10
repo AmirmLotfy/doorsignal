@@ -10,7 +10,7 @@
     "test": "vitest run",
     "test:unit": "vitest run",
     "verify": "pnpm test && pnpm typecheck && pnpm build",
-    "infra:synth": "pnpm --filter @doorsignal/cdk synth",
+    "infra:synth": "pnpm package:web && pnpm --filter @doorsignal/cdk synth",
     "secrets:scan": "node scripts/scan-secrets.mjs"
   },
   "devDependencies": {
