@@ -1,6 +1,6 @@
 # DoorSignal demo script
 
-Target runtime: **2 minutes 45 seconds**. Language: English. Narration: a natural male voice, conversational and unhurried. Product footage must be a real browser recording. On-screen provider evidence must come from the official Ring playground and the deployed AWS account.
+Final runtime: **2 minutes 45 seconds**. Language: English. Narration: Higgsfield Seed Audio 1.0 using the Cillian male preset. Product footage is a real browser recording of the deployed judge demo. The official Ring playground insert remains pending Amazon Developer sign-in.
 
 ## 0:00–0:10 — The problem and product
 
@@ -36,7 +36,7 @@ Target runtime: **2 minutes 45 seconds**. Language: English. Narration: a natura
 
 ## 2:05–2:30 — Ring and AWS evidence
 
-**Picture:** Use a compact split sequence: official Ring playground token/device screen; DoorSignal's live integration status and imported event; an evidence row for a successful Ring API request; AWS console/CLI evidence for DynamoDB → Streams → EventBridge → Lambda; and a successful Nova 2 Lite Converse invocation with its bounded usage. Do not show credentials or account secrets.
+**Picture:** Use a compact split sequence: official Ring playground device/event screen after sign-in; DoorSignal's integration state; and the deployed DynamoDB → Streams → EventBridge → Lambda architecture. Do not show credentials or account secrets. The current AWS account blocks Nova Converse with `Operation not allowed`, so show the bounded unknown-on-failure behavior and do not claim a successful model response.
 
 **Voiceover:**
 

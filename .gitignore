@@ -5,6 +5,7 @@ dist
 out
 .turbo
 *.tsbuildinfo
+__pycache__/
 .env
 .env.local
 .env.production
@@ -21,6 +22,7 @@ infra/cdk/cdk.context.json
 artifacts/private/
 artifacts/deploy/
 artifacts/evidence/
+artifacts/video/
 assets/submission/*-v2.*
 *.pem
 *.key
