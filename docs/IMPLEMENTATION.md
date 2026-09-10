@@ -36,6 +36,16 @@ MOBBIN-GATE: PASS for the approved dashboard refinement.
 - The final 2:45 screen recording of the verified hosted stories is public at `https://youtu.be/bX1VeK-_rTo` with open and uploaded English captions.
 - Narration, music, captions, thumbnail, participant details, eligibility attestations, and explicit submission authorization are complete.
 
+## Live revalidation — September 10, 2026 at 14:08 EEST
+
+- Restored short-lived AWS CLI access and verified account `828547077857` in `us-east-1`.
+- `DoorSignalStack` is `UPDATE_COMPLETE` with termination protection enabled. CloudFormation reports `IN_SYNC` with zero drifted resources. Both CloudWatch alarms are `OK`; the processing dead-letter queue and alert inbox are empty; the DynamoDB table is `ACTIVE` with deletion protection enabled.
+- The dedicated budget reports USD 0.022 actual gross spend against the USD 50 ceiling. AWS billing data can lag, so this is a provider snapshot rather than a hard-cap guarantee.
+- SES reports a healthy sending account in the sandbox, with the `doorsignal.site` identity verified and DKIM successful. No message was sent during this check.
+- `https://doorsignal.site/api/health` returned `status: ok` with DynamoDB storage, and `www.doorsignal.site` returned the intended permanent redirect.
+- A fresh, 16-token Nova 2 Lite Converse request through `us.amazon.nova-2-lite-v1:0` still returned `ValidationException: Operation not allowed`. DoorSignal continues to surface that provider failure as `unknown`.
+- The full release verification passed again: 40 tests, all TypeScript checks, Next.js 16.3.3 production build, and the repository secret scan. CDK diff found no infrastructure/configuration changes; only a rebuilt web asset hash differed, so the healthy submitted stack was not redeployed.
+
 ## Evidence levels
 
 Implementation, automated tests, local browser checks, deployed endpoint checks, official Ring playground calls, Bedrock invocation, email acceptance/delivery, and participant attestations are separate evidence. Missing evidence remains explicit.
